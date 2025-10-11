@@ -3,7 +3,7 @@
 import {useState} from "react";
 import Link from "next/link";
 
-export default function Home() {
+export default function Tip() {
     const [tipAmount, setTips] = useState(0);
     const tipValues = [
         2,
