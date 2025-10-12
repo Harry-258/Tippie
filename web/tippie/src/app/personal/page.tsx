@@ -1,19 +1,12 @@
 'use client';
 
-import {useState} from "react";
 import Link from "next/link";
 import {IoAnalytics, IoHome, IoSettingsOutline} from "react-icons/io5";
-import {IconType} from "react-icons";
 import {BiDollar, BiLogOut} from "react-icons/bi";
 import Image from "next/image";
+import {Action, ActionIcon} from "@/app/util/types";
 
-type ActionIcon = {
-    name: string,
-    icon: IconType,
-}
-
-export default function Home() {
-    const [currentPage] = useState('Dashboard'); // TODO: Remove and replace with react router?
+export default function Home(currentPage: Action) {
 
     const sidebarTopOptions: ActionIcon[] = [
         { name: "Dashboard", icon: IoHome },
@@ -23,7 +16,7 @@ export default function Home() {
 
     const sidebarBottomOptions: ActionIcon[] = [
         { name: "Settings", icon: IoSettingsOutline },
-        { name: "Logout", icon: BiLogOut },
+        { name: "Log Out", icon: BiLogOut },
     ]
 
     return (
@@ -46,7 +39,7 @@ export default function Home() {
                                     </span>
                                 </div>
                             ) : (
-                                <div key={i} className="flex flex-row gap-2 px-4 p-2 items-center">
+                                <div key={i} className="flex flex-row gap-2 pl-4 p-2 items-center pr-30">
                                     <option.icon className="text-lg"/>
                                     <Link href={`/personal/${option.name.toLowerCase()}`} className="font-medium text-m">{option.name}</Link>
                                 </div>
