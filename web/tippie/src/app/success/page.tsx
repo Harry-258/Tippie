@@ -18,7 +18,7 @@ export default function Page() {
     }
 
     return (
-        <div className="flex flex-col span-10 w-full items-center h-screen justify-center p-10">
+        <div className="flex flex-col span-10 w-full items-center h-screen justify-center p-10 text-primary">
             <span>Payment Successful! Feedback?</span>
             { submitted ? (
                 <span>Thx for the feedback</span>
