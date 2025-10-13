@@ -33,10 +33,26 @@ body {
 }
 
 
-link {
+.link {
     color: var(--foreground);
 }
 
-link:hover {
+.link:hover {
     color: var(--color-gray-400);
+}
+
+.button {
+    color: var(--primary);
+    background-color: var(--action);
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+    background-color: #c9e074;
+    color: var(--primary);
 }
