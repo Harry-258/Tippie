@@ -1,6 +1,6 @@
 export default function Profile() {
     return (
-        <div>
+        <div className="text-primary">
             Profile Content
         </div>
     )

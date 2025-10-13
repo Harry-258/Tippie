@@ -31,3 +31,12 @@ body {
     color: var(--foreground);
     font-family: Inter, Arial, Helvetica, sans-serif;
 }
+
+
+link {
+    color: var(--foreground);
+}
+
+link:hover {
+    color: var(--color-gray-400);
+}

@@ -1,6 +1,6 @@
 export default function Settings() {
     return (
-        <div>
+        <div className="text-primary">
             Settings Content
         </div>
     )

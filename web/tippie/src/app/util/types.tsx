@@ -5,4 +5,4 @@ export type ActionIcon = {
     icon: IconType,
 }
 
-export type Action = 'Dashboard' | 'Analytics' | 'Trading' | 'Settings' | 'Log Out';
+export type Action = 'Dashboard' | 'Analytics' | 'Trading' | 'Settings' | 'Log Out' | 'Profile';

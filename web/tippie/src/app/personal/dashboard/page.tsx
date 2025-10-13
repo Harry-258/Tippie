@@ -1,6 +1,6 @@
 export default function Dashboard() {
     return (
-        <div>
+        <div className="text-primary">
             Dashboard Content
         </div>
     )
