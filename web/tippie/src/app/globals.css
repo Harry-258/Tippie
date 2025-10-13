@@ -52,11 +52,23 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.shadow {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
 .button:hover {
     background-color: #c9e074;
-    color: var(--primary);
+}
+
+.button-primary {
+    background-color: var(--primary);
+    color: var(--foreground);
+}
+
+.button-primary:hover {
+    background-color: #2C2B45;
+}
+
+.button-primary:disabled {
+    background-color: #40405A;
+}
+
+.shadow {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }

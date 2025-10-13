@@ -64,6 +64,7 @@ export default function Home({ children }: Readonly<{children: React.ReactNode}>
                                 alt="Profile Picture"
                                 width={60}
                                 height={60}
+                                className="border-3 border-solid border-action rounded-full"
                             />
                         </Link>
                         <div className="flex flex-col gap-1 items-start">

@@ -20,3 +20,13 @@ export type TileGridProps = {
     cols: number | string,
     className?: string,
 }
+
+export enum Progress {
+    TipAmount,
+    PaymentDetails,
+    FeedbackForm,
+}
+
+export type ProgressBarProps = {
+    progress: Progress,
+}
