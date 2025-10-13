@@ -7,7 +7,7 @@ import Tile from "@/app/components/Tile";
 import Image from "next/image";
 
 export default function Tip() {
-    const [tipAmount, setTips] = useState(0);
+    const [tipAmount, setTips] = useState(2);
     const tipValues = [
         2,
         5,
@@ -15,22 +15,31 @@ export default function Tip() {
     ]
 
     return (
-        <TileGrid rows={1} cols={1} className="m-10">
-            <Tile innerClassName="flex flex-col justify-center items-center m-10">
-                <div className="flex flex-col gap-2 mb-6">
-                    <Image
-                        src="/profile.svg"
-                        alt="Profile Picture"
-                        width={100}
-                        height={100}
-                    />
-                    <span className="font-semibold">Jane Smith</span>
+        <TileGrid rows={1} cols={1} className="p-10">
+            <Tile innerClassName="flex flex-col">
+                <div className="w-full flex flex-row justify-end">
+                    <div className="bg-primary text-foreground rounded-lg p-2">
+                        Lang
+                    </div>
                 </div>
-                <span className="mb-2">Leave a tip for Jane!</span>
-                <div className={"flex flex-row gap-4 justify-center"}>
-                    { tipValues.map((value, index) => (
-                        <button key={index} disabled={value === tipAmount} onClick={() => setTips(value)}>{value}€</button>
-                    )) }
+                <div className="flex flex-col items-center justify-center h-full">
+                    <div className="flex flex-col gap-1 my-6 text-center">
+                        <Image
+                            src="/profile.svg"
+                            alt="Profile Picture"
+                            width={100}
+                            height={100}
+                            className="mb-2"
+                        />
+                        <span className="font-semibold">Jane Smith</span>
+                        <span className="rounded-3xl bg-action text-primary mx-2 justify-self-center shadow font-medium text-sm">Waitress</span>
+                    </div>
+                    <span className="mb-2">Leave a tip for Jane!</span>
+                    <div className={"flex flex-row gap-4 justify-center"}>
+                        { tipValues.map((value, index) => (
+                            <button key={index} disabled={value === tipAmount} onClick={() => setTips(value)}>{value}€</button>
+                        )) }
+                    </div>
                     <input
                         type="number"
                         min="2"
@@ -38,12 +47,12 @@ export default function Tip() {
                         placeholder="Other"
                         onChange={(value) => setTips(Number(value.target.value))}
                         className="text-primary"
+                        id="tip_input_other"
                     />
+                    <Link href={'/tip/success'} className="mt-10">
+                        <div className="button">Confirm {tipAmount}€</div>
+                    </Link>
                 </div>
-
-                <Link href={'/tip/success'}>
-                    <div className="button">Pay</div>
-                </Link>
             </Tile>
         </TileGrid>
     )
