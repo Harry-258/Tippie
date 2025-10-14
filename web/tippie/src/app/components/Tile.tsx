@@ -23,7 +23,18 @@ export default function Tile({children, outerClassName, innerClassName, bgColor,
             {/*        {title}*/}
             {/*    </h3>*/}
             {/*}*/}
-            <div className={`${innerClassName} p-7 ${textColor ? textColor : 'text-primary'} h-full w-full`}>
+
+            {title &&
+                <div className="mt-4 text-center w-full">
+                    <span
+                        className={`font-bold text-lg ${textColor ? textColor : 'text-primary'}`}
+                    >
+                        {title}
+                    </span>
+                </div>
+            }
+
+            <div className={`${innerClassName} ${title ? 'pt-0' : ''} p-5 ${textColor ? textColor : 'text-primary'} h-full w-full`}>
                 {children}
             </div>
         </div>
