@@ -14,6 +14,7 @@ export type TileProps = {
     innerClassName?: string;
     bgColor?: string;
     textColor?: string;
+    title?: string;
 }
 
 export type TileGridProps = {
