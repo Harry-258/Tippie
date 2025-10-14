@@ -12,6 +12,8 @@ export type TileProps = {
     children: React.ReactNode,
     outerClassName?: string;
     innerClassName?: string;
+    bgColor?: string;
+    textColor?: string;
 }
 
 export type TileGridProps = {

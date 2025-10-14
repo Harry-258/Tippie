@@ -80,7 +80,7 @@ export default function Home({ children }: Readonly<{children: React.ReactNode}>
                     )}
                 </div>
             </div>
-            <div className="w-full h-full ml-10">
+            <div className="w-full h-full ml-5">
                 {children}
             </div>
         </div>

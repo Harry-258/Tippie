@@ -16,7 +16,9 @@ export default function Tip() {
         10,
     ]
 
-    // TODO: Add languages
+    // TODO: - Add option for different languages
+    //       - Confirm with 2f precision
+    //       - Dividers?
 
     return (
         <TileGrid rows={1} cols={1} className="p-5">
