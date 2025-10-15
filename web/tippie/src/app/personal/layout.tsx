@@ -1,32 +1,32 @@
 'use client';
 
 import Link from "next/link";
-import {IoAnalytics, IoChatbubbleEllipsesOutline, IoHome, IoSettingsOutline} from "react-icons/io5";
-import {BiDollar, BiLogOut} from "react-icons/bi";
+
 import Image from "next/image";
 import {ActionIcon} from "@/app/util/types";
 import React from "react";
 import {usePathname} from "next/navigation";
+import {SignOutIcon, HouseIcon, ChartLineIcon, CurrencyDollarIcon, ChatCircleDotsIcon, GearIcon} from "@phosphor-icons/react";
 
 export default function Home({ children }: Readonly<{children: React.ReactNode}>) {
     const path = usePathname();
-    console.log(path);
+    const iconSize = 20;
 
     const sidebarTopOptions: ActionIcon[] = [
-        { name: "Dashboard", icon: IoHome },
-        { name: "Analytics", icon: IoAnalytics },
-        { name: "Trading", icon: BiDollar },
-        { name: "Advice", icon: IoChatbubbleEllipsesOutline },
-        { name: "Settings", icon: IoSettingsOutline },
+        { name: "Dashboard", icon: HouseIcon },
+        { name: "Analytics", icon: ChartLineIcon },
+        { name: "Trading", icon: CurrencyDollarIcon },
+        { name: "Advice", icon: ChatCircleDotsIcon },
+        { name: "Settings", icon: GearIcon },
     ];
 
     const sidebarBottomOptions: ActionIcon[] = [
-        { name: "Log Out", icon: BiLogOut },
+        { name: "Log Out", icon: SignOutIcon },
     ]
 
     return (
         <div className="flex flex-row p-10 h-screen">
-            <div className="bg-primary rounded-3xl h-full p-6 flex flex-col justify-between">
+            <div className="bg-primary rounded-3xl h-full p-6 flex flex-col justify-between shadow-md">
                 <div className="flex flex-col gap-6">
                     <div className="flex flex-row gap-2 pl-4 items-center">
                         {/*<div className="rounded-full bg-action w-5 h-5"/>*/}
@@ -38,17 +38,17 @@ export default function Home({ children }: Readonly<{children: React.ReactNode}>
                         {sidebarTopOptions.map((option: ActionIcon, i) => (
                             path.toLowerCase().trim().endsWith(option.name.toLowerCase()) ? (
                                 <div key={i} className="rounded-3xl bg-action text-primary p-2 pl-4 pr-30 w-full font-medium flex flex-row gap-2 items-center">
-                                    <option.icon className="text-lg"/>
-                                    <span>
+                                    <option.icon  weight="bold" size={iconSize}/>
+                                    <span className="font-semibold">
                                         {option.name}
                                     </span>
                                 </div>
                             ) : (
                                 <div key={i} className="flex flex-row gap-2 pl-4 p-2 items-center pr-30">
-                                    <option.icon className="text-lg"/>
+                                    <option.icon weight="bold" size={iconSize}/>
                                     <Link
                                         href={`/personal/${option.name.toLowerCase()}`}
-                                        className="link"
+                                        className="link font-semibold"
                                     >
                                         {option.name}
                                     </Link>
@@ -75,8 +75,8 @@ export default function Home({ children }: Readonly<{children: React.ReactNode}>
                     </div>
                     {sidebarBottomOptions.map((option: ActionIcon, i) =>
                         <div key={i} className="flex flex-row gap-2 px-4 p-2 items-center">
-                            <option.icon className="text-lg"/>
-                            <Link className="link" href={`/personal/${option.name.toLowerCase()}`}>{option.name}</Link>
+                            <option.icon weight="bold" size={iconSize}/>
+                            <Link className="link font-semibold" href={`/personal/${option.name.toLowerCase()}`}>{option.name}</Link>
                         </div>
                     )}
                 </div>

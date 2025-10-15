@@ -6,9 +6,9 @@ export default function GoalGauge() {
             value={84.4}
             margin={{ left: 0, right: 0, top: 4, bottom: 0 }}
             sx={() => ({
-                // [`& .${gaugeClasses.valueText}`]: {
-                //     fontSize: 40,
-                // },
+                [`& .${gaugeClasses.valueText}`]: {
+                    fontSize: 24,
+                },
                 [`& .${gaugeClasses.valueArc}`]: {
                     fill: '#DEF186',
                 },
@@ -17,6 +17,8 @@ export default function GoalGauge() {
                 // },
             })}
             text={({value}) => `${value}%`}
+            innerRadius="60%"
+            outerRadius="85%"
         />
     )
 }

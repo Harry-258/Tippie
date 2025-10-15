@@ -20,9 +20,9 @@ export default function Tile({
     const elements = (
         <div
             className={`
-                ${redirectPage ? '' : outerClassName} rounded-3xl
+                ${redirectPage ? 'hover:shadow-lg transition-all duration-300' : outerClassName} rounded-3xl
                 ${bgColor ? bgColor : 'bg-white'}
-                h-full w-full`
+                h-full w-full shadow-md`
             }
         >
             {title &&
@@ -44,7 +44,7 @@ export default function Tile({
         return (
             <Link
                 href={`/personal/${redirectPage.toLowerCase()}`}
-                className={`transition-transform duration-200 hover:scale-[1.01] ${outerClassName}`}
+                className={`transition-transform duration-300 hover:scale-[1.01] ${outerClassName}`}
             >
                 {elements}
             </Link>

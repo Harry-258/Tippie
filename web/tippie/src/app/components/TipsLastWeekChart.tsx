@@ -1,4 +1,5 @@
 import {BarChart} from "@mui/x-charts";
+import {SeriesValueFormatter} from "@mui/x-charts/internals";
 
 export default function TipsLastWeekChart() {
     const xLabels = [
@@ -20,16 +21,19 @@ export default function TipsLastWeekChart() {
         32.3
     ]
 
+    const dataFormatter: SeriesValueFormatter<number | null> = (value: number | null) => {return `${value}€`};
+
     // TODO: get data from backend
 
     return (
         <BarChart
+            borderRadius={10}
             grid={{ horizontal: true }}
             margin={{ left: 0, right: 0 }}
             series={[
                 {
                     data: data,
-                    // label: "Tips (€)",
+                    valueFormatter: dataFormatter
                 }
             ]}
             xAxis={[
@@ -43,11 +47,14 @@ export default function TipsLastWeekChart() {
                         thresholds: [0],
                         colors: ['#DEF186'],
                     },
+                    // label: 'Day',
+                    labelStyle: { fontWeight: 600 },
                 },
             ]}
             yAxis={[
                 {
-                    label: 'Tips(€)',
+                    // label: 'Tips (€)',
+                    labelStyle: { fontWeight: 600 },
                 }
             ]}
         />
