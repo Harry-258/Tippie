@@ -6,7 +6,7 @@ export type ActionIcon = {
     icon: IconType,
 }
 
-export type Action = 'Dashboard' | 'Analytics' | 'Trading' | 'Settings' | 'Log Out' | 'Profile';
+export type Action = 'Dashboard' | 'Analytics' | 'Trading' | 'Settings' | 'Log Out' | 'Profile' | "Advice";
 
 export type TileProps = {
     children: React.ReactNode,
@@ -15,6 +15,7 @@ export type TileProps = {
     bgColor?: string;
     textColor?: string;
     title?: string;
+    redirectPage?: Action;
 }
 
 export type TileGridProps = {

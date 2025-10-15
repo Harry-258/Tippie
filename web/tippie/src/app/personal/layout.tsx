@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import {IoAnalytics, IoHome, IoSettingsOutline} from "react-icons/io5";
+import {IoAnalytics, IoChatbubbleEllipsesOutline, IoHome, IoSettingsOutline} from "react-icons/io5";
 import {BiDollar, BiLogOut} from "react-icons/bi";
 import Image from "next/image";
 import {ActionIcon} from "@/app/util/types";
@@ -16,6 +16,7 @@ export default function Home({ children }: Readonly<{children: React.ReactNode}>
         { name: "Dashboard", icon: IoHome },
         { name: "Analytics", icon: IoAnalytics },
         { name: "Trading", icon: BiDollar },
+        { name: "Advice", icon: IoChatbubbleEllipsesOutline },
         { name: "Settings", icon: IoSettingsOutline },
     ];
 
