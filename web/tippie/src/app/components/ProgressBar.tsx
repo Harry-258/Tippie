@@ -1,7 +1,6 @@
 import React from "react";
-import {AiOutlineDollar, AiOutlineFileDone} from "react-icons/ai";
-import {IoCardOutline} from "react-icons/io5";
 import {Progress, ProgressBarProps} from "@/app/util/types";
+import {CheckCircleIcon, CreditCardIcon, CurrencyDollarIcon} from "@phosphor-icons/react";
 
 export default function ProgressBar({progress}: ProgressBarProps) {
     const iconClass = "absolute top-[25px] -translate-x-1/2 -translate-y-1/2";
@@ -18,13 +17,13 @@ export default function ProgressBar({progress}: ProgressBarProps) {
             </svg>
 
             <div className={`left-[25px] ${iconClass}`}>
-                <AiOutlineDollar className="text-foreground" size={iconSize}/>
+                <CurrencyDollarIcon className="text-foreground" size={iconSize}/>
             </div>
             <div className={`left-[120px] ${iconClass}`}>
-                <IoCardOutline className={progress === Progress.TipAmount ? "text-primary" : "text-foreground"} size={iconSize}/>
+                <CreditCardIcon className={progress === Progress.TipAmount ? "text-primary" : "text-foreground"} size={iconSize}/>
             </div>
             <div className={`left-[215px] ${iconClass}`}>
-                <AiOutlineFileDone className={progress === Progress.FeedbackForm ? "text-foreground" : "text-primary"} size={iconSize}/>
+                <CheckCircleIcon className={progress === Progress.FeedbackForm ? "text-foreground" : "text-primary"} size={iconSize}/>
             </div>
         </div>
     )

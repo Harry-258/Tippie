@@ -6,8 +6,9 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import GoalGauge from "@/app/components/GoalGauge";
 import TipsLastWeekChart from "@/app/components/TipsLastWeekChart";
-import {LightbulbIcon, ClockIcon, ArrowRightIcon} from "@phosphor-icons/react";
+import {LightbulbIcon, ClockIcon, PlusCircleIcon, ArrowRightIcon} from "@phosphor-icons/react";
 import Link from "next/link";
+import React from "react";
 
 export default function Dashboard() {
     // TODO bar chart: - Add ChartBarIcon to title
@@ -44,6 +45,9 @@ export default function Dashboard() {
                     <TipsLastWeekChart/>
                 </Stack>
             </Tile>
+            <Tile outerClassName="col-span-1 row-span-1">
+                <div/>
+            </Tile>
             <Tile outerClassName="col-span-2 row-span-2" redirectPage="Analytics">
                 <Stack width="100%" height="100%">
                     <Typography
@@ -60,9 +64,6 @@ export default function Dashboard() {
             <Tile outerClassName="col-span-1 row-span-1">
                 <div/>
             </Tile>
-            <Tile outerClassName="col-span-1 row-span-1">
-                <div/>
-            </Tile>
             <Tile outerClassName="col-span-3 row-span-2" innerClassName="flex flex-col gap-1">
                 <span className="text-lg font-semibold flex flex-row gap-2 items-center ml-2">
                     <LightbulbIcon size={iconSize}/>
@@ -75,10 +76,10 @@ export default function Dashboard() {
                 <Link
                     href="/personal/advice"
                     className="hover:shadow-md transition-all duration-300
-                        hover:scale-[1.01] rounded-lg bg-white p-4 w-full
+                        hover:scale-[1.01] rounded-lg bg-white p-4
                         shadow-sm border border-action/60 mt-2"
                 >
-                    <div className="flex items-start gap-3">
+                    <div className="flex gap-3 items-center">
                         <div className="flex-shrink-0 w-9 h-9 rounded-full bg-action flex items-center justify-center">
                             <ClockIcon className="text-primary" size={iconSize}/>
                         </div>
@@ -92,12 +93,25 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </Link>
-            </Tile>
-            <Tile outerClassName="col-span-2 row-span-2">
-                <div/>
-            </Tile>
-            <Tile outerClassName="col-span-full">
-                <div/>
+
+                <div className="flex gap-2">
+                    <Link href={'/personal/advice'} className="mt-4">
+                        <div className="flex">
+                            <div className="button flex gap-1 items-center shadow-md">
+                                <ArrowRightIcon className="text-primary" size={iconSize}/>
+                                Continue Conversation
+                            </div>
+                        </div>
+                    </Link>
+                    <Link href={'/personal/advice'} className="mt-4">
+                        <div className="flex">
+                            <div className="button flex gap-1 items-center shadow-md">
+                                <PlusCircleIcon className="text-primary" size={iconSize}/>
+                                New Conversation
+                            </div>
+                        </div>
+                    </Link>
+                </div>
             </Tile>
         </TileGrid>
     )

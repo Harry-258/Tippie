@@ -1,9 +1,9 @@
-import {IconType} from "react-icons";
 import React from "react";
+import {Icon} from "@phosphor-icons/react";
 
 export type ActionIcon = {
     name: Action,
-    icon: IconType,
+    icon: Icon,
 }
 
 export type Action = 'Dashboard' | 'Analytics' | 'Trading' | 'Settings' | 'Log Out' | 'Profile' | "Advice";
@@ -33,4 +33,9 @@ export enum Progress {
 
 export type ProgressBarProps = {
     progress: Progress,
+}
+
+export type DropdownProps = {
+    options: string[],
+    optionCallback?: (option: string) => void,
 }

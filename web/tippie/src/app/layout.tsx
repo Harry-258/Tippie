@@ -21,7 +21,7 @@ export default function RootLayout({ children }: Readonly<{children: React.React
     return (
         <html lang="en" className="h-dvh">
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white`}
+                className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white h-full`}
             >
                 {children}
             </body>
