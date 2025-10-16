@@ -2,7 +2,7 @@
 
 import TileGrid from "@/app/components/TileGrid";
 import Tile from "@/app/components/Tile";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Conversation, MessageSender} from "@/app/util/types";
 import {ArrowCircleUpIcon, PlusCircleIcon} from "@phosphor-icons/react";
 
@@ -11,6 +11,7 @@ export default function Advice() {
     const conversationCardClass = "flex items-center hover:bg-gray-300 gap-1 p-2 px-6 hover:cursor-pointer";
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>();
     const [currentInput, setCurrentInput] = useState<string>("");
+    const inputRef = useRef<HTMLInputElement>(null);
 
     // TODO: replace this with backend call
     const [conversations, setConversations] = useState<Conversation[]>([
@@ -61,6 +62,8 @@ export default function Advice() {
 
     useEffect(() => {
         window.addEventListener("keydown", keyboardShortcutHandler);
+        inputRef.current?.focus();
+
         return () => window.removeEventListener("keydown", keyboardShortcutHandler);
     })
 
@@ -78,16 +81,23 @@ export default function Advice() {
     return (
         <TileGrid rows={1} cols={1}>
             <Tile innerClassName="flex py-0 px-0">
-                <div className="h-full w-1/5 border-r-3 border-background flex flex-col overflow-auto">
+                <div className="h-full w-1/4 border-r-3 border-background flex flex-col overflow-auto">
                     <span className="ml-6 mt-6 mb-4 text-primary/70 truncate text-lg">
                         Conversations:
                     </span>
-                    <div className={conversationCardClass} onClick={() => setCurrentConversation(null)}>
+                    <hr className="w-auto mx-4 text-background border-t-2 rounded-full"/>
+                    <div className={conversationCardClass} onClick={() => {
+                        setCurrentConversation(null);
+                        inputRef.current?.focus();
+                    }}>
                         <PlusCircleIcon className="text-primary" size={iconSize} />
                         <span className="truncate">New Conversation</span>
                     </div>
                     {conversations.map((conversation: Conversation, index: number) => (
-                        <div className={conversationCardClass} key={index} onClick={() => {setCurrentConversation(conversation)}}>
+                        <div className={conversationCardClass} key={index} onClick={() => {
+                            setCurrentConversation(conversation);
+                            inputRef.current?.focus();
+                        }}>
                             <span className="truncate">{conversation.title}</span>
                         </div>
                     ))}
@@ -115,6 +125,7 @@ export default function Advice() {
                     >
                         <input
                             placeholder="Ask Anything"
+                            ref={inputRef}
                             className={"w-full h-full p-4 rounded-lg focus:outline-none"}
                             value={currentInput}
                             onChange={(event) => setCurrentInput(event.target.value)}
