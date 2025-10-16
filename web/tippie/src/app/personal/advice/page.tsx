@@ -8,7 +8,7 @@ import {ArrowCircleUpIcon, PlusCircleIcon} from "@phosphor-icons/react";
 
 export default function Advice() {
     const iconSize = 20;
-    const conversationCardClass = "flex items-center hover:bg-gray-300 gap-1 p-2 px-6 hover:cursor-pointer";
+    const conversationCardClass = "flex items-center hover:bg-gray-300 gap-1 py-2 p-1 px-6 hover:cursor-pointer mx-1 rounded-md";
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>();
     const [currentInput, setCurrentInput] = useState<string>("");
     const inputRef = useRef<HTMLInputElement>(null);

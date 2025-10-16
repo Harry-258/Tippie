@@ -33,6 +33,7 @@ export enum Progress {
 
 export type ProgressBarProps = {
     progress: Progress,
+    className?: string,
 }
 
 export type DropdownProps = {
