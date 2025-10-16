@@ -39,3 +39,19 @@ export type DropdownProps = {
     options: string[],
     optionCallback?: (option: string) => void,
 }
+
+export type Message = {
+    message: string,
+    timestamp: number,
+    sender: MessageSender,
+}
+
+export enum MessageSender {
+    User,
+    Agent,
+}
+
+export type Conversation = {
+    messages: Message[],
+    title: string,
+}

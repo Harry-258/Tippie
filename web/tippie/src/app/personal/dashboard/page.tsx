@@ -2,25 +2,21 @@
 
 import TileGrid from "@/app/components/TileGrid";
 import Tile from "@/app/components/Tile";
-import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import GoalGauge from "@/app/components/GoalGauge";
 import TipsLastWeekChart from "@/app/components/TipsLastWeekChart";
-import {LightbulbIcon, ClockIcon, PlusCircleIcon, ArrowRightIcon} from "@phosphor-icons/react";
+import {LightbulbIcon, ClockIcon, PlusCircleIcon, ArrowRightIcon, ChartBarIcon, PiggyBankIcon} from "@phosphor-icons/react";
 import Link from "next/link";
 import React from "react";
 
 export default function Dashboard() {
     // TODO bar chart: - Add ChartBarIcon to title
     //                 - Format values
-    // TODO tiles: - call to AI prompt
-    //             - stocks went up/down?
+    // TODO tiles: - stocks went up/down?
     //             - auto-trading On/Off
-    // TODO: make sidebar collapsible
+    // TODO: make sidebar collapsible?
 
     const iconSize = 20;
-
-    // Want to get more advice? Jump back into your conversations!
 
     return (
         <TileGrid rows={6} cols={5}>
@@ -29,19 +25,17 @@ export default function Dashboard() {
                     Welcome, Jane!
                 </span>
                 <span className="text-lg">
-                    168,8€
+                    Balance: 168,8€
                 </span>
             </Tile>
             <Tile outerClassName="col-span-2 row-span-2" innerClassName="flex flex-col justify-center items-center font-bold" redirectPage="Analytics">
-                {/*<span className="font-semibold text-lg">Tips Received Over the Last Week</span>*/}
                 <Stack width="95%" height="95%">
-                    <Typography
-                        variant="inherit"
-                        component="span"
-                        // textAlign="center"
-                    >
-                        Tips Received Over the Last Week
-                    </Typography>
+                    <div className="flex flex-row gap-1 items-center font-bold text-lg">
+                        <ChartBarIcon size={iconSize} weight="bold"/>
+                        <span>
+                            Tips Received Over the Last Week
+                        </span>
+                    </div>
                     <TipsLastWeekChart/>
                 </Stack>
             </Tile>
@@ -50,14 +44,12 @@ export default function Dashboard() {
             </Tile>
             <Tile outerClassName="col-span-2 row-span-2" redirectPage="Analytics">
                 <Stack width="100%" height="100%">
-                    <Typography
-                        variant="inherit"
-                        component="span"
-                        textAlign="center"
-                        fontWeight="700"
-                    >
-                        Savings Goal
-                    </Typography>
+                    <div className="flex flex-row gap-1 items-center justify-center font-bold text-lg">
+                        <PiggyBankIcon size={iconSize} weight="bold"/>
+                        <span>
+                            Your Saving Goal
+                        </span>
+                    </div>
                     <GoalGauge/>
                 </Stack>
             </Tile>
@@ -65,8 +57,8 @@ export default function Dashboard() {
                 <div/>
             </Tile>
             <Tile outerClassName="col-span-3 row-span-2" innerClassName="flex flex-col gap-1">
-                <span className="text-lg font-semibold flex flex-row gap-2 items-center ml-2">
-                    <LightbulbIcon size={iconSize}/>
+                <span className="text-lg font-bold flex flex-row gap-1 items-center ml-2">
+                    <LightbulbIcon size={iconSize} weight="bold"/>
                     Want More Expert Trading Advice?
                 </span>
                 <span className="ml-2">
@@ -77,7 +69,7 @@ export default function Dashboard() {
                     href="/personal/advice"
                     className="hover:shadow-md transition-all duration-300
                         hover:scale-[1.01] rounded-lg bg-white p-4
-                        shadow-sm border border-action/60 mt-2"
+                        shadow-sm border border-action/60 mt-5"
                 >
                     <div className="flex gap-3 items-center">
                         <div className="flex-shrink-0 w-9 h-9 rounded-full bg-action flex items-center justify-center">

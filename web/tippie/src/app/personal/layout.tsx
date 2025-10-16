@@ -24,6 +24,9 @@ export default function Home({ children }: Readonly<{children: React.ReactNode}>
         { name: "Log Out", icon: SignOutIcon },
     ]
 
+    // TODO: - Make sidebar buttons, not just clickable text
+    //       - Make sidebar overflow-auto without having the icons disappear
+
     return (
         <div className="flex flex-row p-10 h-screen">
             <div className="bg-white rounded-3xl h-full p-6 flex flex-col justify-between shadow-md text-primary">
@@ -36,7 +39,7 @@ export default function Home({ children }: Readonly<{children: React.ReactNode}>
                     <div className="flex flex-col gap-2 w-full">
                         {sidebarTopOptions.map((option: ActionIcon, i) => (
                             path.toLowerCase().trim().endsWith(option.name.toLowerCase()) ? (
-                                <div key={i} className="rounded-3xl bg-action text-primary p-2 pl-4 pr-30 w-full flex flex-row gap-2 items-center">
+                                <div key={i} className="rounded-3xl bg-action text-primary p-2 pl-4 pr-30 w-full flex flex-row gap-2 items-center font-semibold">
                                     <option.icon size={iconSize}/>
                                     <span>
                                         {option.name}
