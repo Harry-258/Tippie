@@ -5,9 +5,9 @@ import Tile from "@/app/components/Tile";
 import React, {useEffect, useRef, useState} from "react";
 import {Conversation, MessageSender} from "@/app/util/types";
 import {ArrowCircleUpIcon, PlusCircleIcon} from "@phosphor-icons/react";
+import {iconSize} from "@/app/util/util";
 
 export default function Advice() {
-    const iconSize = 20;
     const conversationCardClass = "flex items-center hover:bg-gray-300 gap-1 py-2 p-1 px-6 hover:cursor-pointer mx-1 rounded-md";
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>();
     const [currentInput, setCurrentInput] = useState<string>("");

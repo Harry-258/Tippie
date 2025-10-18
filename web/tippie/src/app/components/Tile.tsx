@@ -26,12 +26,10 @@ export default function Tile({
             }
         >
             {title &&
-                <div className="mt-4 text-center w-full">
-                    <span
-                        className={`font-bold text-lg ${textColor ? textColor : 'text-primary'}`}
-                    >
-                        {title}
-                    </span>
+                <div
+                    className={`font-bold text-lg ${textColor ? textColor : 'text-primary'} text-center w-full p-4`}
+                >
+                    {title}
                 </div>
             }
             <div className={`${innerClassName} ${title ? 'pt-0' : ''} p-5 ${textColor ? textColor : 'text-primary'} h-full w-full`}>

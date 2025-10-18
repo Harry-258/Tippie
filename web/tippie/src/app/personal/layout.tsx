@@ -7,10 +7,11 @@ import {ActionIcon} from "@/app/util/types";
 import React from "react";
 import {usePathname} from "next/navigation";
 import {SignOutIcon, HouseIcon, ChartLineIcon, CurrencyDollarIcon, ChatCircleDotsIcon, GearIcon} from "@phosphor-icons/react";
+import {iconSize} from "@/app/util/util";
 
 export default function Home({ children }: Readonly<{children: React.ReactNode}>) {
     const path = usePathname();
-    const iconSize = 20;
+    const sidebarElementClass = "flex flex-row gap-2 pl-4 pr-30 p-2 items-center rounded-3xl hover:bg-background";
 
     const sidebarTopOptions: ActionIcon[] = [
         { name: "Dashboard", icon: HouseIcon },
@@ -39,22 +40,23 @@ export default function Home({ children }: Readonly<{children: React.ReactNode}>
                     <div className="flex flex-col gap-2 w-full">
                         {sidebarTopOptions.map((option: ActionIcon, i) => (
                             path.toLowerCase().trim().endsWith(option.name.toLowerCase()) ? (
-                                <div key={i} className="rounded-3xl bg-action text-primary p-2 pl-4 pr-30 w-full flex flex-row gap-2 items-center font-semibold">
+                                <div key={i} className="rounded-3xl bg-action text-primary p-2 pl-4 pr-30 w-full flex flex-row gap-2 items-center">
                                     <option.icon size={iconSize}/>
                                     <span>
                                         {option.name}
                                     </span>
                                 </div>
                             ) : (
-                                <div key={i} className="flex flex-row gap-2 pl-4 p-2 items-center pr-30">
+                                <Link
+                                    href={`/personal/${option.name.toLowerCase()}`}
+                                    className={sidebarElementClass}
+                                    key={i}
+                                >
                                     <option.icon size={iconSize}/>
-                                    <Link
-                                        href={`/personal/${option.name.toLowerCase()}`}
-                                        className="link"
-                                    >
+                                    <span className="">
                                         {option.name}
-                                    </Link>
-                                </div>
+                                    </span>
+                                </Link>
                             )
                         ))}
                     </div>
@@ -76,10 +78,14 @@ export default function Home({ children }: Readonly<{children: React.ReactNode}>
                         </div>
                     </div>
                     {sidebarBottomOptions.map((option: ActionIcon, i) =>
-                        <div key={i} className="flex flex-row gap-2 px-4 p-2 items-center">
+                        <Link
+                            href={`/personal/${option.name.toLowerCase()}`}
+                            key={i}
+                            className={sidebarElementClass}
+                        >
                             <option.icon size={iconSize}/>
-                            <Link className="link" href={`/personal/${option.name.toLowerCase()}`}>{option.name}</Link>
-                        </div>
+                            <span>{option.name}</span>
+                        </Link>
                     )}
                 </div>
             </div>

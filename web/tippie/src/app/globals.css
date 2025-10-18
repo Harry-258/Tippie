@@ -35,15 +35,6 @@ body {
     font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
-
-.link {
-    color: var(--primary);
-}
-
-.link:hover {
-    color: var(--color-gray-400);
-}
-
 .button {
     color: var(--primary);
     background-color: var(--action);
