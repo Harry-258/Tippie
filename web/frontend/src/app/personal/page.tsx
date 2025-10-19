@@ -1,7 +1,14 @@
+'use client';
+
 import {redirect} from "next/navigation";
+import {useAuth} from "@/contexts/authContext";
 
 export default function Personal() {
-    // TODO: Check if logged in, then redirect
+    const {loggedIn} = useAuth();
 
-    redirect('/personal/dashboard');
+    if (loggedIn) {
+        redirect('/personal/dashboard');
+    } else {
+        redirect('/auth/login');
+    }
 }

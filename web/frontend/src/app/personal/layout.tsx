@@ -5,11 +5,18 @@ import Link from "next/link";
 import Image from "next/image";
 import {ActionIcon} from "@/app/util/types";
 import React from "react";
-import {usePathname} from "next/navigation";
+import {redirect, usePathname} from "next/navigation";
 import {SignOutIcon, HouseIcon, ChartLineIcon, CurrencyDollarIcon, ChatCircleDotsIcon, GearIcon} from "@phosphor-icons/react";
 import {iconSize} from "@/app/util/util";
+import {useAuth} from "@/contexts/authContext";
 
 export default function Home({ children }: Readonly<{children: React.ReactNode}>) {
+    const {loggedIn} = useAuth();
+
+    if (!loggedIn) {
+        redirect("/auth/login");
+    }
+
     const path = usePathname();
     const sidebarElementClass = "flex flex-row gap-2 pl-4 pr-30 p-2 items-center rounded-3xl hover:bg-background";
 
@@ -79,7 +86,7 @@ export default function Home({ children }: Readonly<{children: React.ReactNode}>
                     </div>
                     {sidebarBottomOptions.map((option: ActionIcon, i) =>
                         <Link
-                            href={`/personal/${option.name.toLowerCase()}`}
+                            href={ `${option.name === 'Log Out' ? `/auth/logout` : `/personal/${option.name.toLowerCase()}`}`}
                             key={i}
                             className={sidebarElementClass}
                         >
