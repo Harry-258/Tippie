@@ -44,7 +44,7 @@ export default function Signup() {
     }
 
     return (
-        <div className="flex flex-col text-center items-center justify-between h-full">
+        <div className="flex flex-col text-center items-center h-full">
             <span className="text-3xl font-semibold m-20">Tippie</span>
 
             <form onSubmit={submit} className="flex flex-col gap-6 w-full mb-10">

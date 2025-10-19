@@ -57,8 +57,8 @@ export default function Page() {
     });
 
     return (
-        <div className="flex flex-col text-center items-center justify-center h-full">
-            <span className="text-3xl font-semibold m-20 mt-20">Tippie</span>
+        <div className="flex flex-col text-center items-center h-full">
+            <span className="text-3xl font-semibold m-20">Tippie</span>
 
             <form onSubmit={submit} className="flex flex-col gap-6 w-full mb-10">
                 <div className="flex flex-col text-left w-full">
