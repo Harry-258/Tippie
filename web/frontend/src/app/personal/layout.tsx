@@ -10,7 +10,7 @@ import {SignOutIcon, HouseIcon, ChartLineIcon, CurrencyDollarIcon, ChatCircleDot
 import {iconSize} from "@/app/util/util";
 import {useAuth} from "@/contexts/authContext";
 
-export default function Home({ children }: Readonly<{children: React.ReactNode}>) {
+export default function PersonalLayout({ children }: Readonly<{children: React.ReactNode}>) {
     const {loggedIn} = useAuth();
 
     if (!loggedIn) {
