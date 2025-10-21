@@ -4,13 +4,10 @@ import React, {useState} from "react";
 import TileGrid from "@/app/components/TileGrid";
 import Tile from "@/app/components/Tile";
 import Dropdown from "@/app/components/Dropdown";
+import {languages} from "@/app/util/util";
 
-export default function Tip({ children }: Readonly<{children: React.ReactNode}>) {
+export default function TipLayout({ children }: Readonly<{children: React.ReactNode}>) {
     const [language, setLanguage] = useState("EN");
-    const languages = [
-        'EN',
-        'NL',
-    ]
 
     function changeLanguage(newLanguage: string) {
         setLanguage(newLanguage);

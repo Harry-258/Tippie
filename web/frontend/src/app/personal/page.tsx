@@ -1,0 +1,14 @@
+'use client';
+
+import {redirect} from "next/navigation";
+import {useAuth} from "@/contexts/authContext";
+
+export default function Personal() {
+    const {loggedIn} = useAuth();
+
+    if (loggedIn) {
+        redirect('/personal/dashboard');
+    } else {
+        redirect('/auth/login');
+    }
+}
