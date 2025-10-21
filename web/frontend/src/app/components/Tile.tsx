@@ -1,7 +1,7 @@
 'use client';
 
-import {TileProps} from "@/app/util/types";
-import Link from "next/link";
+import { TileProps } from '@/app/util/types';
+import Link from 'next/link';
 
 /**
  * This component should only be used inside a `TileGrid`.
@@ -22,21 +22,22 @@ export default function Tile({
             className={`
                 ${redirectPage ? 'hover:shadow-lg transition-all duration-300' : outerClassName} rounded-3xl
                 ${bgColor ? bgColor : 'bg-white'}
-                h-full w-full shadow-md`
-            }
+                h-full w-full shadow-md`}
         >
-            {title &&
+            {title && (
                 <div
                     className={`font-bold text-lg ${textColor ? textColor : 'text-primary'} text-center w-full p-4`}
                 >
                     {title}
                 </div>
-            }
-            <div className={`${innerClassName} ${title ? 'pt-0' : ''} p-5 ${textColor ? textColor : 'text-primary'} h-full w-full`}>
+            )}
+            <div
+                className={`${innerClassName} ${title ? 'pt-0' : ''} p-5 ${textColor ? textColor : 'text-primary'} h-full w-full`}
+            >
                 {children}
             </div>
         </div>
-    )
+    );
 
     if (redirectPage) {
         return (
@@ -46,7 +47,7 @@ export default function Tile({
             >
                 {elements}
             </Link>
-        )
+        );
     }
 
     return elements;

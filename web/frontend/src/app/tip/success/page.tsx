@@ -1,13 +1,13 @@
 'use client';
 
-import React from "react";
-import ProgressBar from "@/app/components/ProgressBar";
-import {Progress} from "@/app/util/types";
+import React from 'react';
+import ProgressBar from '@/app/components/ProgressBar';
+import { Progress } from '@/app/util/types';
 
 export default function Page() {
     const [submitted, setSubmitted] = React.useState(false);
     const [invalidFeedback, setInvalidFeedback] = React.useState(false);
-    const [feedback, setFeedback] = React.useState("");
+    const [feedback, setFeedback] = React.useState('');
 
     function submitFeedback(feedback: string) {
         if (feedback.trim().length === 0) {
@@ -41,19 +41,24 @@ export default function Page() {
             <div className="flex flex-col items-center justify-center w-full h-full text-center gap-6">
                 <div className="flex flex-col items-center justify-center gap-2 mb-10">
                     <h2 className="text-2xl font-semibold">Payment Successful! 🎉</h2>
-                    <p className="mx-2">Your tip made someone’s day! Would you also like to leave them some feedback?</p>
+                    <p className="mx-2">
+                        Your tip made someone’s day! Would you also like to leave them some
+                        feedback?
+                    </p>
                 </div>
 
                 {submitted ? (
                     <div className="flex flex-col items-center space-y-2">
-                        <span className="text-lg font-medium text-primary">Thank you for your feedback!</span>
+                        <span className="text-lg font-medium text-primary">
+                            Thank you for your feedback!
+                        </span>
                     </div>
                 ) : (
                     <div className="flex flex-col items-center w-full">
                         <textarea
                             rows={4}
                             placeholder="Write your feedback here..."
-                            onChange={(e) => setFeedback(e.target.value)}
+                            onChange={e => setFeedback(e.target.value)}
                             className="w-full p-3 rounded-xl bg-primary/5 shadow-inner focus:outline-none"
                         />
                     </div>
@@ -75,5 +80,5 @@ export default function Page() {
                 )}
             </div>
         </div>
-    )
+    );
 }

@@ -21,13 +21,7 @@ const eslintConfig = [
 
     // 🧹 Ignore generated / build files
     {
-        ignores: [
-            'node_modules/**',
-            '.next/**',
-            'out/**',
-            'build/**',
-            'next-env.d.ts',
-        ],
+        ignores: ['node_modules/**', '.next/**', 'out/**', 'build/**', 'next-env.d.ts'],
     },
 
     // 🧠 Main rule set

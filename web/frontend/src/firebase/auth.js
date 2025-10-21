@@ -2,13 +2,13 @@ import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithEmailAndPassword,
-    signInWithPopup
-} from "firebase/auth";
-import {auth} from "./firebaseClient";
+    signInWithPopup,
+} from 'firebase/auth';
+import { auth } from './firebaseClient';
 
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
-}
+};
 
 export const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
@@ -35,15 +35,15 @@ export const signInWithGoogle = async () => {
     // });
 
     return await signInWithPopup(auth, provider);
-}
+};
 
 export const doSignInWithEmailAndPassword = async (email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
-}
+};
 
 export const doSignOut = () => {
     return auth.signOut();
-}
+};
 
 // TODO
 // export const doPasswordReset = (email) => {

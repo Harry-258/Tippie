@@ -1,29 +1,36 @@
-import React from "react";
-import {Icon} from "@phosphor-icons/react";
+import React from 'react';
+import { Icon } from '@phosphor-icons/react';
 
 export type ActionIcon = {
-    name: Action,
-    icon: Icon,
-}
+    name: Action;
+    icon: Icon;
+};
 
-export type Action = 'Dashboard' | 'Analytics' | 'Trading' | 'Settings' | 'Log Out' | 'Profile' | "Advice";
+export type Action =
+    | 'Dashboard'
+    | 'Analytics'
+    | 'Trading'
+    | 'Settings'
+    | 'Log Out'
+    | 'Profile'
+    | 'Advice';
 
 export type TileProps = {
-    children: React.ReactNode,
+    children: React.ReactNode;
     outerClassName?: string;
     innerClassName?: string;
     bgColor?: string;
     textColor?: string;
     title?: string;
     redirectPage?: Action;
-}
+};
 
 export type TileGridProps = {
-    children: React.ReactNode,
-    rows: number | string,
-    cols: number | string,
-    className?: string,
-}
+    children: React.ReactNode;
+    rows: number | string;
+    cols: number | string;
+    className?: string;
+};
 
 export enum Progress {
     TipAmount,
@@ -32,20 +39,20 @@ export enum Progress {
 }
 
 export type ProgressBarProps = {
-    progress: Progress,
-    className?: string,
-}
+    progress: Progress;
+    className?: string;
+};
 
 export type DropdownProps = {
-    options: string[],
-    optionCallback?: (option: string) => void,
-}
+    options: string[];
+    optionCallback?: (option: string) => void;
+};
 
 export type Message = {
-    message: string,
-    timestamp: number,
-    sender: MessageSender,
-}
+    message: string;
+    timestamp: number;
+    sender: MessageSender;
+};
 
 export enum MessageSender {
     User,
@@ -53,6 +60,6 @@ export enum MessageSender {
 }
 
 export type Conversation = {
-    messages: Message[],
-    title: string,
-}
+    messages: Message[];
+    title: string;
+};

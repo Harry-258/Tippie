@@ -1,4 +1,4 @@
-import {Gauge, gaugeClasses} from "@mui/x-charts";
+import { Gauge, gaugeClasses } from '@mui/x-charts';
 
 export default function GoalGauge() {
     return (
@@ -16,9 +16,9 @@ export default function GoalGauge() {
                 //     fill: theme.palette.text.disabled,
                 // },
             })}
-            text={({value}) => `${value}%`}
+            text={({ value }) => `${value}%`}
             innerRadius="60%"
             outerRadius="85%"
         />
-    )
+    );
 }

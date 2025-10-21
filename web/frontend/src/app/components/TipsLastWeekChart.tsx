@@ -1,27 +1,13 @@
-import {BarChart} from "@mui/x-charts";
-import {SeriesValueFormatter} from "@mui/x-charts/internals";
+import { BarChart } from '@mui/x-charts';
+import { SeriesValueFormatter } from '@mui/x-charts/internals';
 
 export default function TipsLastWeekChart() {
-    const xLabels = [
-        'Mon',
-        'Tue',
-        'Wed',
-        'Thu',
-        'Fri',
-        'Sat',
-        'Sun',
-    ];
-    const data = [
-        34,
-        0,
-        0,
-        29.5,
-        36,
-        37,
-        32.3
-    ]
+    const xLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const data = [34, 0, 0, 29.5, 36, 37, 32.3];
 
-    const dataFormatter: SeriesValueFormatter<number | null> = (value: number | null) => {return `${value}€`};
+    const dataFormatter: SeriesValueFormatter<number | null> = (value: number | null) => {
+        return `${value}€`;
+    };
 
     // TODO: get data from backend
 
@@ -33,8 +19,8 @@ export default function TipsLastWeekChart() {
             series={[
                 {
                     data: data,
-                    valueFormatter: dataFormatter
-                }
+                    valueFormatter: dataFormatter,
+                },
             ]}
             xAxis={[
                 {
@@ -55,8 +41,8 @@ export default function TipsLastWeekChart() {
                 {
                     // label: 'Tips (€)',
                     labelStyle: { fontWeight: 600 },
-                }
+                },
             ]}
         />
-    )
+    );
 }

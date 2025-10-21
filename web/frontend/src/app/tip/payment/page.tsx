@@ -1,10 +1,10 @@
 'use client';
 
-import {Progress} from "@/app/util/types";
-import ProgressBar from "@/app/components/ProgressBar";
-import Link from "next/link";
-import Image from "next/image";
-import React from "react";
+import { Progress } from '@/app/util/types';
+import ProgressBar from '@/app/components/ProgressBar';
+import Link from 'next/link';
+import Image from 'next/image';
+import React from 'react';
 
 export default function Payment() {
     // const [paymentMethod, setPaymentMethod] = useState<string | null>();
@@ -30,5 +30,5 @@ export default function Payment() {
                 </Link>
             </div>
         </div>
-    )
+    );
 }
