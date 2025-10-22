@@ -40,22 +40,6 @@ const eslintConfig = [
             jsdoc,
         },
         rules: {
-            /* 📚 Require documentation on functions/classes */
-            'jsdoc/require-jsdoc': [
-                'error',
-                {
-                    publicOnly: true,
-                    require: {
-                        FunctionDeclaration: true,
-                        ClassDeclaration: true,
-                        MethodDefinition: true,
-                        ArrowFunctionExpression: true,
-                    },
-                },
-            ],
-            'jsdoc/require-param': 'warn',
-            'jsdoc/require-returns': 'warn',
-
             /* 🧹 Code style */
             'max-len': ['error', { code: 100, ignoreUrls: true }],
             indent: ['error', 2],

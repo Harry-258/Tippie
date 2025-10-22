@@ -24,7 +24,6 @@ export default function Dashboard() {
 
     function toggleAutoTrading() {
         // TODO: Make backend call
-        console.log(autoTrading);
         setAutoTrading(!autoTrading);
     }
 

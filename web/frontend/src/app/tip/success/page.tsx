@@ -16,7 +16,6 @@ export default function Page() {
             setSubmitted(true);
             setInvalidFeedback(false);
         }
-        console.log(feedback);
     }
 
     return (

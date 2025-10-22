@@ -37,7 +37,7 @@ export default function Signup() {
                     router.push('/personal/dashboard');
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     setSignupFailed(true);
                     setSignupFailedMessage('Something went wrong. Please try again.');
                     setIsRegistering(false);

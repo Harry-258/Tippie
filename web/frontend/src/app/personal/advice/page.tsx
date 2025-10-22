@@ -73,7 +73,6 @@ export default function Advice() {
      * @param event the event that comes from pressing a key or combination of keys
      */
     function keyboardShortcutHandler(event: KeyboardEvent) {
-        console.log(event.key);
         if (event.key === 'Enter') {
             submitMessage();
         }

@@ -9,9 +9,9 @@ import { languages } from '@/app/util/util';
 export default function TipLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     const [language, setLanguage] = useState('EN');
 
+    // TODO
     function changeLanguage(newLanguage: string) {
         setLanguage(newLanguage);
-        console.log(language);
     }
 
     return (

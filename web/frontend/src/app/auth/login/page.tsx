@@ -33,7 +33,7 @@ export default function Page() {
                     router.push('/personal/dashboard');
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     setLoginFailed(true);
                 });
         }
@@ -44,11 +44,10 @@ export default function Page() {
         if (!isLoggingIn) {
             signInWithGoogle()
                 .then(() => {
-                    console.log('Logged in with Google!');
                     router.push('/personal/dashboard');
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     setIsLoggingIn(false);
                 });
         }

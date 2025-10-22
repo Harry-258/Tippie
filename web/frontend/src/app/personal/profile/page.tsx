@@ -11,7 +11,7 @@ export default function Profile() {
         fetch('http://localhost:4000/api/test')
             .then(res => res.json())
             .then(data => setTest(data.user))
-            .catch(err => console.log(err));
+            .catch(err => console.error(err));
     });
 
     return (
