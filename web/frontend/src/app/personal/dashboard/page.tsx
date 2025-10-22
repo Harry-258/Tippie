@@ -1,19 +1,20 @@
 'use client';
 
-import TileGrid from "@/app/components/TileGrid";
-import Tile from "@/app/components/Tile";
+import TileGrid from '@/app/components/TileGrid';
+import Tile from '@/app/components/Tile';
 import Stack from '@mui/material/Stack';
-import GoalGauge from "@/app/components/GoalGauge";
-import TipsLastWeekChart from "@/app/components/TipsLastWeekChart";
+import GoalGauge from '@/app/components/GoalGauge';
+import TipsLastWeekChart from '@/app/components/TipsLastWeekChart';
 import {
     ChartBarIcon,
     PiggyBankIcon,
     BriefcaseIcon,
-    ArrowUpRightIcon, ChartLineUpIcon,
-} from "@phosphor-icons/react";
-import React from "react";
-import ChatSuggestion from "@/app/components/ChatSuggestion";
-import {iconSize} from "@/app/util/util";
+    ArrowUpRightIcon,
+    ChartLineUpIcon,
+} from '@phosphor-icons/react';
+import React from 'react';
+import ChatSuggestion from '@/app/components/ChatSuggestion';
+import { iconSize } from '@/app/util/util';
 
 export default function Dashboard() {
     // TODO tiles: - stocks went up/down?
@@ -23,30 +24,30 @@ export default function Dashboard() {
 
     function toggleAutoTrading() {
         // TODO: Make backend call
-        console.log(autoTrading);
         setAutoTrading(!autoTrading);
     }
 
     return (
         <TileGrid rows={6} cols={10}>
-            <Tile innerClassName="flex flex-col gap-4 justify-center ml-2" outerClassName="col-span-full">
-                <span className="text-2xl font-bold">
-                    Welcome, Jane!
-                </span>
-                <span className="text-lg">
-                    Balance: 168,8€
-                </span>
+            <Tile
+                innerClassName="flex flex-col gap-4 justify-center ml-2"
+                outerClassName="col-span-full"
+            >
+                <span className="text-2xl font-bold">Welcome, Jane!</span>
+                <span className="text-lg">Balance: 168,8€</span>
             </Tile>
 
-            <Tile outerClassName="col-span-4 row-span-2" innerClassName="flex flex-col justify-center items-center font-bold" redirectPage="Analytics">
+            <Tile
+                outerClassName="col-span-4 row-span-2"
+                innerClassName="flex flex-col justify-center items-center font-bold"
+                redirectPage="Analytics"
+            >
                 <Stack width="95%" height="95%">
                     <div className="flex flex-row gap-1 items-center font-bold text-lg">
-                        <ChartBarIcon size={iconSize} weight="bold"/>
-                        <span>
-                            Tips Received Over the Last Week
-                        </span>
+                        <ChartBarIcon size={iconSize} weight="bold" />
+                        <span>Tips Received Over the Last Week</span>
                     </div>
-                    <TipsLastWeekChart/>
+                    <TipsLastWeekChart />
                 </Stack>
             </Tile>
 
@@ -66,14 +67,14 @@ export default function Dashboard() {
                     >
                         <span
                             className={`text-sm font-semibold transition-opacity ${
-                                autoTrading ? "text-primary opacity-100" : "opacity-50"
+                                autoTrading ? 'text-primary opacity-100' : 'opacity-50'
                             }`}
                         >
                             ON
                         </span>
                         <span
                             className={`text-sm font-semibold transition-opacity ${
-                                !autoTrading ? "text-red-500 opacity-100" : "opacity-50"
+                                !autoTrading ? 'text-red-500 opacity-100' : 'opacity-50'
                             }`}
                         >
                             OFF
@@ -81,7 +82,7 @@ export default function Dashboard() {
 
                         <div
                             className={`absolute top-1/2 -translate-y-1/2 h-10 w-14 rounded-xl bg-gradient-to-b from-white to-gray-300 shadow-md border border-gray-300 transition-transform duration-300 ease-in-out ${
-                                autoTrading ? "translate-x-[55px]" : "translate-x-[-5px]"
+                                autoTrading ? 'translate-x-[55px]' : 'translate-x-[-5px]'
                             }`}
                         />
                     </div>
@@ -91,12 +92,10 @@ export default function Dashboard() {
             <Tile outerClassName="col-span-4 row-span-2" redirectPage="Analytics">
                 <Stack width="100%" height="100%">
                     <div className="flex flex-row gap-1 items-center justify-center font-bold text-lg">
-                        <PiggyBankIcon size={iconSize} weight="bold"/>
-                        <span>
-                            Your Saving Goal
-                        </span>
+                        <PiggyBankIcon size={iconSize} weight="bold" />
+                        <span>Your Saving Goal</span>
                     </div>
-                    <GoalGauge/>
+                    <GoalGauge />
                 </Stack>
             </Tile>
 
@@ -117,16 +116,16 @@ export default function Dashboard() {
             </Tile>
 
             <Tile outerClassName="col-span-5 row-span-2">
-                <ChatSuggestion/>
+                <ChatSuggestion />
             </Tile>
 
             <Tile outerClassName="col-span-5 row-span-2">
-                <div/>
+                <div />
             </Tile>
 
             <Tile outerClassName="col-span-full">
-                <div/>
+                <div />
             </Tile>
         </TileGrid>
-    )
+    );
 }

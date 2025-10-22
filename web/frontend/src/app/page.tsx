@@ -1,10 +1,10 @@
 'use client';
 
-import {redirect} from "next/navigation";
-import {useAuth} from "@/contexts/authContext";
+import { redirect } from 'next/navigation';
+import { useAuth } from '@/contexts/authContext';
 
 export default function Page() {
-    const {loggedIn} = useAuth();
+    const { loggedIn } = useAuth();
 
     if (loggedIn) {
         redirect('/personal/dashboard');

@@ -1,12 +1,12 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
     --background: #f7f7f5;
     --background-hover: #e9e9e6;
     --foreground: #f7f7f5;
-    --action: #DEF186;
-    --primary: #1F1E30;
-    --primaryHover: #2C2B45;
+    --action: #def186;
+    --primary: #1f1e30;
+    --primaryHover: #2c2b45;
 }
 
 @theme inline {
@@ -26,9 +26,9 @@
         --background: #f7f7f5;
         --background-hover: #e9e9e6;
         --foreground: #f7f7f5;
-        --action: #DEF186;
-        --primary: #1F1E30;
-        --primaryHover: #2C2B45;
+        --action: #def186;
+        --primary: #1f1e30;
+        --primaryHover: #2c2b45;
     }
 }
 
@@ -63,7 +63,7 @@ body {
 }
 
 .button-primary:disabled {
-    background-color: #40405A;
+    background-color: #40405a;
 }
 
 .hover {
