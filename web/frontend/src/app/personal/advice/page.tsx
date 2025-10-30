@@ -8,6 +8,8 @@ import { ArrowCircleUpIcon, PlusCircleIcon } from '@phosphor-icons/react';
 import { iconSize } from '@/app/util/util';
 
 export default function Advice() {
+    // TODO: Make conversation always show the latest message, even when it's scrollable
+
     const conversationCardClass =
         'flex items-center hover:bg-gray-300 gap-1 py-2 p-1 px-6 hover:cursor-pointer mx-1 rounded-md';
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>();

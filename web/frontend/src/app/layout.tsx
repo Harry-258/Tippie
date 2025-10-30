@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
-        <html lang="en" className="h-dvh">
+        <html lang="en" className="h-dvh overscroll-none">
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white h-full`}
             >

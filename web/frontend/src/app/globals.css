@@ -8,6 +8,7 @@
     --primary: #1f1e30;
     --primaryHover: #2c2b45;
     --productBlue: #dbebf4;
+    --homeText: #c0c0c0;
 }
 
 @theme inline {
@@ -18,6 +19,7 @@
     --color-primaryHover: var(--primaryHover);
     --color-action: var(--action);
     --color-productBlue: var(--productBlue);
+    --color-homeText: var(--homeText);
 
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
@@ -32,6 +34,7 @@
         --primary: #1f1e30;
         --primaryHover: #2c2b45;
         --productBlue: #e2f1f9;
+        --homeText: #c0c0c0;
     }
 }
 

@@ -2,7 +2,12 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { InstagramLogoIcon, LinkedinLogoIcon, XLogoIcon } from '@phosphor-icons/react';
+import {
+    InstagramLogoIcon,
+    LinkedinLogoIcon,
+    XLogoIcon,
+    YoutubeLogoIcon,
+} from '@phosphor-icons/react';
 import React from 'react';
 
 export default function Page({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -20,13 +25,13 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
     const footerIconSizes = 30;
 
     return (
-        <div className="h-full w-full bg-background flex-col flex justify-between">
+        <div className="h-full w-full bg-primary flex-col flex justify-between">
             <div className="h-full">
-                <div className="flex flex-row justify-between bg-productBlue text-primary text-xl p-4 font-bold pr-15 pl-10 w-full shadow-lg">
+                <div className="flex bg-black flex-row justify-between text-homeText text-xl font-bold px-15 py-10 w-full shadow-lg">
                     <div className="flex flex-row gap-6 items-center">
                         <Link href="/">
                             <Image
-                                src="/logo_simple.png"
+                                src="/logo_simple_white.png"
                                 alt={'Tippie logo'}
                                 height={150}
                                 width={150}
@@ -43,12 +48,15 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
                         <Link href="auth/login">Register</Link>
                     </div>
                 </div>
+                {/*<hr*/}
+                {/*    className="text-background/20 mx-10 mt-5"*/}
+                {/*/>*/}
 
                 {children}
             </div>
 
-            <div className="bg-primary text-foreground w-full flex flex-col py-20 gap-10">
-                <div className="flex flex-row gap-30 text-lg pl-40 w-full">
+            <div className="bg-black text-homeText w-full flex flex-col py-20 gap-10">
+                <div className="flex flex-row gap-30 text-lg pl-30 w-full">
                     <div className="flex flex-col gap-2">
                         <Image
                             src={'/logo_simple_white.png'}
@@ -68,6 +76,9 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
                             <a href="">
                                 <XLogoIcon size={footerIconSizes} />
                             </a>
+                            <a href="">
+                                <YoutubeLogoIcon size={footerIconSizes} />
+                            </a>
                         </div>
                     </div>
 
@@ -81,7 +92,7 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
                     </div>
 
                     <div className="flex flex-col gap-2 text-[#8c8c91]">
-                        <span className="font-semibold text-xl text-background">Get Started</span>
+                        <span className="font-bold text-xl text-homeText">Get Started</span>
                         {footerGetStartedOptions.map((option, index) => (
                             <Link href={option.link} key={index}>
                                 {option.text}
@@ -89,8 +100,8 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
                         ))}
                     </div>
                 </div>
-                <div className="w-full flex justify-center">
-                    <span className="text-[#8c8c91] my-2">© 2025 Tippie Inc.</span>
+                <div className="text-[#8c8c91] my-2 w-full flex justify-center">
+                    <span>© 2025 All rights reserved.</span>
                 </div>
             </div>
         </div>
