@@ -48,6 +48,14 @@ export type DropdownProps = {
     optionCallback?: (option: string) => void;
 };
 
+export type DescriptionCardWithImageProps = {
+    imageSrc: string;
+    imageSize?: number;
+    title: string;
+    content: string;
+    imageOnTheLeft?: boolean;
+};
+
 export type Message = {
     message: string;
     timestamp: number;

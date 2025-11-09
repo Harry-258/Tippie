@@ -11,10 +11,12 @@ import {
 import React from 'react';
 
 export default function Page({ children }: Readonly<{ children: React.ReactNode }>) {
-    const headerLeftOptions = [
+    const headerRightOptions = [
+        { text: 'Home', link: '/home' },
         { text: 'About', link: '/home/about' },
         { text: 'Contact', link: '/home/contact' },
-        { text: 'Dashboard', link: '/personal' },
+        // { text: 'Dashboard', link: '/personal' },
+        // { text: 'Register', link: '/auth/login' },
     ];
 
     const footerGetStartedOptions = [
@@ -22,12 +24,12 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
         { text: 'Pricing', link: '/home/pricing' },
     ];
 
-    const footerIconSizes = 30;
+    const footerIconSizes = 40;
 
     return (
-        <div className="h-full w-full bg-primary flex-col flex justify-between">
+        <div className="w-full bg-primary flex-col flex justify-between">
             <div className="h-full">
-                <div className="flex bg-black flex-row justify-between text-homeText text-xl font-bold px-15 py-10 w-full shadow-lg">
+                <div className="flex bg-black flex-row justify-between text-homeText text-xl font-bold px-16 py-8 w-full shadow-lg">
                     <div className="flex flex-row gap-6 items-center">
                         <Link href="/">
                             <Image
@@ -37,61 +39,49 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
                                 width={150}
                             />
                         </Link>
-                        {headerLeftOptions.map((option, index) => (
+                    </div>
+
+                    <div className="flex flex-row gap-8 items-center">
+                        {headerRightOptions.map((option, index) => (
                             <Link href={option.link} key={index}>
                                 {option.text}
                             </Link>
                         ))}
                     </div>
-
-                    <div className="flex flex-row gap-4 items-center">
-                        <Link href="auth/login">Register</Link>
-                    </div>
                 </div>
-                {/*<hr*/}
-                {/*    className="text-background/20 mx-10 mt-5"*/}
-                {/*/>*/}
 
                 {children}
             </div>
 
-            <div className="bg-black text-homeText w-full flex flex-col py-20 gap-10">
-                <div className="flex flex-row gap-30 text-lg pl-30 w-full">
-                    <div className="flex flex-col gap-2">
-                        <Image
-                            src={'/logo_simple_white.png'}
-                            alt={'Tippie logo'}
-                            height={150}
-                            width={150}
-                        />
-                        <span>Learn while you earn.</span>
-
-                        <div className="flex flex-row gap-2 mt-4">
-                            <a href="https://www.instagram.com/tippie.me/">
-                                <InstagramLogoIcon size={footerIconSizes} />
-                            </a>
-                            <a href="">
-                                <LinkedinLogoIcon size={footerIconSizes} />
-                            </a>
-                            <a href="">
-                                <XLogoIcon size={footerIconSizes} />
-                            </a>
-                            <a href="">
-                                <YoutubeLogoIcon size={footerIconSizes} />
-                            </a>
-                        </div>
+            <div className="bg-black text-homeText text-lg flex flex-row p-16 gap-30 pb-32 justify-between">
+                <div className="flex flex-col">
+                    <Image
+                        src={'/logo_simple_white.png'}
+                        alt={'Tippie logo'}
+                        height={150}
+                        width={150}
+                    />
+                    <span className={'font-bold'}>Learn while you earn.</span>
+                    <div className="flex flex-col text-[#4a4a4a] mt-4">
+                        <span>Designed by Tippie.me</span>
+                        <span>© 2025 All rights reserved.</span>
                     </div>
+                </div>
 
-                    <div className="flex flex-col gap-2">
+                <div className="flex flex-row gap-32">
+                    <div className="flex flex-col gap-4">
                         <span className="font-semibold text-xl">Explore</span>
-                        {headerLeftOptions.map((option, index) => (
+                        <Link href="/home" className="text-[#8c8c91]">
+                            Home
+                        </Link>
+                        {headerRightOptions.map((option, index) => (
                             <Link href={option.link} key={index} className="text-[#8c8c91]">
                                 {option.text}
                             </Link>
                         ))}
                     </div>
 
-                    <div className="flex flex-col gap-2 text-[#8c8c91]">
+                    <div className="flex flex-col gap-4 text-[#8c8c91]">
                         <span className="font-bold text-xl text-homeText">Get Started</span>
                         {footerGetStartedOptions.map((option, index) => (
                             <Link href={option.link} key={index}>
@@ -100,9 +90,27 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
                         ))}
                     </div>
                 </div>
-                <div className="text-[#8c8c91] my-2 w-full flex justify-center">
-                    <span>© 2025 All rights reserved.</span>
+
+                <div className="flex flex-col gap-4">
+                    <div className="flex flex-row gap-2 mt-4">
+                        <a href="https://www.instagram.com/tippie.me/">
+                            <InstagramLogoIcon size={footerIconSizes} />
+                        </a>
+                        <a href="">
+                            <LinkedinLogoIcon size={footerIconSizes} />
+                        </a>
+                        <a href="">
+                            <XLogoIcon size={footerIconSizes} />
+                        </a>
+                        <a href="">
+                            <YoutubeLogoIcon size={footerIconSizes} />
+                        </a>
+                    </div>
+                    <div className="text-[#4a4a4a]">Delft, Netherlands</div>
                 </div>
+                {/*<div className="text-[#8c8c91] w-full flex flex-col items-center gap-8 px-16">*/}
+                {/*    <hr className="mt-1 border-t border-[#8c8c91] mx-16 w-full" />*/}
+                {/*</div>*/}
             </div>
         </div>
     );
