@@ -38,9 +38,6 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
 
     const sidebarBottomOptions: ActionIcon[] = [{ name: 'Log Out', icon: SignOutIcon }];
 
-    // TODO: - Make sidebar buttons, not just clickable text
-    //       - Make sidebar overflow-auto without having the icons disappear
-
     return (
         <div className="flex flex-row p-10 h-screen">
             <div className="bg-white rounded-3xl h-full p-6 flex flex-col justify-between shadow-md text-primary">

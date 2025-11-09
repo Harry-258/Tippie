@@ -8,7 +8,7 @@ export default function DescriptionCardWithImage({
     content,
     imageOnTheLeft = false,
 }: DescriptionCardWithImageProps) {
-    const imageClassName = 'rounded-xl';
+    const imageClassName = 'rounded-xl transition duration-200 hover:scale-102 z-0';
 
     return (
         <div className="flex flex-row justify-center gap-16 w-full items-center">

@@ -12,26 +12,28 @@ import React from 'react';
 
 export default function Page({ children }: Readonly<{ children: React.ReactNode }>) {
     const headerRightOptions = [
-        { text: 'Home', link: '/home' },
-        { text: 'About', link: '/home/about' },
-        { text: 'Contact', link: '/home/contact' },
-        // { text: 'Dashboard', link: '/personal' },
-        // { text: 'Register', link: '/auth/login' },
+        { text: 'Home', link: '/home#hero-section' },
+        { text: 'About', link: '/home#how-to-section' },
+        { text: 'Contact', link: '/home#contact-section' },
     ];
 
     const footerGetStartedOptions = [
-        { text: 'Book a Demo', link: '/home/contact' },
-        { text: 'Pricing', link: '/home/pricing' },
+        { text: 'Book a Demo', link: '/home/coming_soon' },
+        { text: 'Pricing', link: '/home/coming_soon' },
     ];
 
     const footerIconSizes = 40;
 
     return (
-        <div className="w-full bg-primary flex-col flex justify-between">
+        <div className="w-full min-h-screen bg-primary flex-col flex justify-between">
             <div className="h-full">
-                <div className="flex bg-black flex-row justify-between text-homeText text-xl font-bold px-16 py-8 w-full shadow-lg">
+                <div
+                    className={`flex bg-black flex-row justify-between text-homeText 
+                        text-xl font-bold px-16 py-8 w-full shadow-lg top-0`}
+                    id="hero-section"
+                >
                     <div className="flex flex-row gap-6 items-center">
-                        <Link href="/">
+                        <Link href="/home#hero-section">
                             <Image
                                 src="/logo_simple_white.png"
                                 alt={'Tippie logo'}
@@ -53,7 +55,7 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
                 {children}
             </div>
 
-            <div className="bg-black text-homeText text-lg flex flex-row p-16 gap-30 pb-32 justify-between">
+            <div className="bg-black text-homeText text-lg flex flex-row p-16 gap-30 pb-24 justify-between bottom-0">
                 <div className="flex flex-col">
                     <Image
                         src={'/logo_simple_white.png'}
@@ -71,9 +73,6 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
                 <div className="flex flex-row gap-32">
                     <div className="flex flex-col gap-4">
                         <span className="font-semibold text-xl">Explore</span>
-                        <Link href="/home" className="text-[#8c8c91]">
-                            Home
-                        </Link>
                         {headerRightOptions.map((option, index) => (
                             <Link href={option.link} key={index} className="text-[#8c8c91]">
                                 {option.text}
@@ -91,8 +90,8 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-4">
-                    <div className="flex flex-row gap-2 mt-4">
+                <div className="flex flex-col gap-4 items-end">
+                    <div className="flex flex-row gap-2">
                         <a href="https://www.instagram.com/tippie.me/">
                             <InstagramLogoIcon size={footerIconSizes} />
                         </a>
@@ -106,11 +105,8 @@ export default function Page({ children }: Readonly<{ children: React.ReactNode 
                             <YoutubeLogoIcon size={footerIconSizes} />
                         </a>
                     </div>
-                    <div className="text-[#4a4a4a]">Delft, Netherlands</div>
+                    <span className="text-[#4a4a4a]">Delft, Netherlands</span>
                 </div>
-                {/*<div className="text-[#8c8c91] w-full flex flex-col items-center gap-8 px-16">*/}
-                {/*    <hr className="mt-1 border-t border-[#8c8c91] mx-16 w-full" />*/}
-                {/*</div>*/}
             </div>
         </div>
     );
