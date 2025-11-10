@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Conversation, MessageSender } from '@/app/util/types';
 import { ArrowCircleUpIcon, PlusCircleIcon } from '@phosphor-icons/react';
 import { iconSize } from '@/app/util/util';
+import { auth } from '@/firebase/firebaseClient';
 
 export default function Advice() {
     // TODO: Make conversation always show the latest message, even when it's scrollable
@@ -35,9 +36,15 @@ export default function Advice() {
         },
     ]);
 
-    function submitMessage(): void {
+    async function submitMessage() {
         if (currentInput !== '') {
-            // TODO: Replace with backend call to add message
+            const user = auth.currentUser;
+            if (!user) {
+                console.error('User is not authenticated');
+                return;
+            }
+
+            const token = await user.getIdToken();
 
             const newMessage = {
                 message: currentInput,
@@ -46,6 +53,28 @@ export default function Advice() {
             };
 
             if (currentConversation) {
+                currentConversation.messages.push(newMessage);
+                fetch('http://localhost:4000/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        message: currentInput,
+                    }),
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log('Got response: ' + JSON.stringify(data));
+                        const newResponseMessage = {
+                            message: data.reply,
+                            timestamp: new Date().getTime(),
+                            sender: MessageSender.Agent,
+                        };
+                        currentConversation.messages.concat(newResponseMessage);
+                    })
+                    .catch(err => console.error(err));
                 setCurrentConversation({
                     messages: currentConversation.messages.concat(newMessage),
                     title: currentConversation.title,
@@ -137,7 +166,7 @@ export default function Advice() {
                         className={`w-auto mx-6 mb-6 rounded-lg shadow-md bg-background text-primary flex justify-between`}
                     >
                         <input
-                            placeholder="Ask Anything"
+                            placeholder="Ask anything"
                             ref={inputRef}
                             className={'w-full h-full p-4 rounded-lg focus:outline-none'}
                             value={currentInput}

@@ -1,14 +1,14 @@
-import * as admin from 'firebase-admin';
+import admin from 'firebase-admin';
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import {Auth} from "firebase-admin/auth";
+import {FieldValue} from "firebase-admin/firestore";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const serviceAccountPath = resolve(__dirname, '../../tippie-ee963-firebase-adminsdk-fbsvc-16f8661098.json');
-
 const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
 
 admin.initializeApp({
@@ -17,5 +17,6 @@ admin.initializeApp({
 
 export const firestore = admin.firestore();
 export const auth: Auth = admin.auth();
+export { FieldValue };
 
 console.log('Firebase Admin SDK initialized.');

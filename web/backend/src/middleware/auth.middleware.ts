@@ -1,10 +1,11 @@
 import {NextFunction, Request, Response} from 'express';
 import {auth} from "../config/firebase.config.js";
+import { DecodedIdToken } from 'firebase-admin/auth';
 
 declare global {
     namespace Express {
         export interface Request {
-            user?: admin.auth.DecodedIdToken;
+            user?: DecodedIdToken;
         }
     }
 }

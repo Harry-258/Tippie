@@ -1,4 +1,5 @@
-import {model} from '../config/firebase.config.js';
+import {firestore, FieldValue} from "../config/firebase.config.js";
+import {Content, GoogleGenerativeAI, HarmBlockThreshold, HarmCategory} from "@google/generative-ai";
 
 export async function getConversation(uid: string, conversationId: string) {
 
@@ -8,15 +9,110 @@ export async function getAllConversations(uid: string) {
 
 }
 
-export async function processChat(uid: string, message: string) {
-    // TODO: add past messages to prompt or create a new one from template if it's the first message
-    const prompt = "" + message;
+// export async function processChat(uid: string, message: string) {
+//     // TODO: add past messages to prompt or create a new one from template if it's the first message
+//     const prompt = "" + message;
+//
+//
+//
+//     console.log(response.output_text);
+//
+//     // TODO: save response to database
+//
+//     return response.output_text;
+// }
 
-    const result = await model.generateContent();
-    const response = result.response;
-    const text = response.text();
-
-    console.log(text);
-
-    return text;
+interface ChatMessage {
+    role: "user" | "model";
+    parts: { text: string }[];
+    timestamp?: FirebaseFirestore.Timestamp | FieldValue;
 }
+
+export const processChat = async (
+    uid: string,
+    userMessage: string,
+    conversationId?: string
+) => {
+    try {
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
+
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash",
+        });
+
+        const safetySettings = [
+            {
+                category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+                threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            },
+        ];
+
+        // 1. Get or Create Conversation Reference
+        let convoRef: FirebaseFirestore.DocumentReference;
+
+        if (conversationId) {
+            convoRef = firestore.collection('users').doc(uid).collection('conversations').doc(conversationId);
+        } else {
+            // Create a new conversation
+            convoRef = firestore.collection('users').doc(uid).collection('conversations').doc();
+            await convoRef.set({
+                title: userMessage.substring(0, 40) + "...", // Set an initial title
+                createdAt: new Date(),
+            });
+        }
+
+        const messagesRef = convoRef.collection('messages');
+
+        // 2. Fetch Chat History from Firestore
+        const historySnapshot = await messagesRef.orderBy('timestamp', 'desc').limit(20).get();
+
+        const firestoreHistory: ChatMessage[] = [];
+        historySnapshot.docs.forEach(doc => {
+            firestoreHistory.push(doc.data() as ChatMessage);
+        });
+
+        // Reverse to be in chronological order and map to the required format
+        const history: Content[] = firestoreHistory.reverse().map(msg => ({
+            role: msg.role,
+            parts: msg.parts,
+        }));
+
+        // 3. Call the Gemini API
+        const chat = model.startChat({
+            history: history,
+            safetySettings,
+        });
+
+        const result = await chat.sendMessage(userMessage);
+        const aiResponseText = result.response.text();
+
+        // 4. Save new messages to Firestore
+        const newUserMessage: ChatMessage = {
+            role: "user",
+            parts: [{ text: userMessage }],
+            timestamp: FieldValue.serverTimestamp(),
+        };
+
+        const newAiMessage: ChatMessage = {
+            role: "model",
+            parts: [{ text: aiResponseText }],
+            timestamp: FieldValue.serverTimestamp(),
+        };
+
+        // Use Promise.all to write both new messages concurrently
+        await Promise.all([
+            messagesRef.add(newUserMessage),
+            messagesRef.add(newAiMessage),
+        ]);
+
+        // 5. Return the AI's response and the conversation ID
+        return {
+            reply: aiResponseText,
+            conversationId: convoRef.id,
+        };
+
+    } catch (error) {
+        console.error("Error processing chat:", error);
+        throw new Error("Failed to get response from AI");
+    }
+};
