@@ -139,9 +139,7 @@ export default function Home() {
                     </button>
                 </form>
                 <div className="text-lg font-semibold flex flex-col w-1/2 gap-4">
-                    <span className="text-3xl font-bold mb-4">
-                        Let’s build something great together
-                    </span>
+                    <span className="text-3xl font-bold mb-4">Contact us</span>
                     <p>Have a question, partnership idea, or just want to say hi?</p>
                     <p className="mb-4">
                         We’d love to hear from you. Whether you’re a creator looking to join Tippie,
