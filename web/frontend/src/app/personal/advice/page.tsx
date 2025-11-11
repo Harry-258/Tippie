@@ -7,37 +7,61 @@ import { Conversation, MessageSender } from '@/app/util/types';
 import { ArrowCircleUpIcon, PlusCircleIcon } from '@phosphor-icons/react';
 import { iconSize } from '@/app/util/util';
 import { auth } from '@/firebase/firebaseClient';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { TailSpin } from 'react-loader-spinner';
 
 export default function Advice() {
     // TODO: Make conversation always show the latest message, even when it's scrollable
 
-    const conversationCardClass =
-        'flex items-center hover:bg-gray-300 gap-1 py-2 p-1 px-6 hover:cursor-pointer mx-1 rounded-md';
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>();
     const [currentInput, setCurrentInput] = useState<string>('');
+    const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
+    const [errorIsShowing, setErrorIsShowing] = useState<boolean>(false);
+    const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const conversationCardClass =
+        'flex items-center hover:bg-gray-300 gap-1 py-2 p-1 px-6 hover:cursor-pointer mx-1 rounded-md';
 
     // TODO: replace this with backend call
     const [conversations, setConversations] = useState<Conversation[]>([
-        {
-            title: 'Extreme funnies happening right now',
-            messages: [
-                {
-                    message: 'Bro waddup',
-                    timestamp: 0,
-                    sender: MessageSender.User,
-                },
-                {
-                    message: 'Not much wassup with u',
-                    timestamp: 1,
-                    sender: MessageSender.Agent,
-                },
-            ],
-        },
+        // {
+        //     title: 'Investment advice',
+        //     messages: [
+        //         {
+        //             message: 'Bro waddup',
+        //             timestamp: 0,
+        //             sender: MessageSender.User,
+        //         },
+        //         {
+        //             message: 'Not much wassup with u',
+        //             timestamp: 1,
+        //             sender: MessageSender.Agent,
+        //         },
+        //     ],
+        // },
     ]);
 
     async function submitMessage() {
-        if (currentInput !== '') {
+        setErrorIsShowing(false);
+        if (loadingTimeout) {
+            clearTimeout(loadingTimeout);
+        }
+
+        const currentInputText = currentInput.trim();
+        setCurrentInput('');
+
+        if (currentInputText !== '') {
+            setLoadingTimeout(
+                setTimeout(() => {
+                    setErrorIsShowing(true);
+                    setIsWaitingForResponse(false);
+                }, 10000)
+            );
+
+            setIsWaitingForResponse(true);
+
             const user = auth.currentUser;
             if (!user) {
                 console.error('User is not authenticated');
@@ -47,48 +71,61 @@ export default function Advice() {
             const token = await user.getIdToken();
 
             const newMessage = {
-                message: currentInput,
+                message: currentInputText,
                 timestamp: new Date().getTime(),
                 sender: MessageSender.User,
             };
+            const currentMessages = (currentConversation?.messages ?? []).concat(newMessage);
+            const currentTitle = currentConversation?.title ?? 'Get title from backend';
 
-            if (currentConversation) {
-                currentConversation.messages.push(newMessage);
-                fetch('http://localhost:4000/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        message: currentInput,
-                    }),
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        console.log('Got response: ' + JSON.stringify(data));
-                        const newResponseMessage = {
-                            message: data.reply,
-                            timestamp: new Date().getTime(),
-                            sender: MessageSender.Agent,
-                        };
-                        currentConversation.messages.concat(newResponseMessage);
-                    })
-                    .catch(err => console.error(err));
-                setCurrentConversation({
-                    messages: currentConversation.messages.concat(newMessage),
-                    title: currentConversation.title,
-                });
-            } else {
+            if (!currentConversation) {
                 const newConvo = {
                     messages: [newMessage],
-                    title: 'Get title from backend',
+                    title: currentTitle,
                 };
                 setCurrentConversation(newConvo);
                 setConversations(conversations.concat(newConvo));
+            } else {
+                setCurrentConversation({
+                    messages: currentMessages,
+                    title: currentTitle,
+                });
             }
 
-            setCurrentInput('');
+            fetch('http://localhost:4000/api/chat/test', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    message: currentInputText,
+                }),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const replyMessage: string = data.reply.reply;
+
+                    const newResponseMessage = {
+                        message: replyMessage,
+                        timestamp: new Date().getTime(),
+                        sender: MessageSender.Agent,
+                    };
+                    // TODO: add new title
+                    setCurrentConversation({
+                        messages: currentMessages.concat(newResponseMessage),
+                        title: currentTitle,
+                    });
+
+                    setIsWaitingForResponse(false);
+                    clearTimeout(loadingTimeout);
+                })
+                .catch(err => {
+                    clearTimeout(loadingTimeout);
+                    setIsWaitingForResponse(false);
+                    setErrorIsShowing(true);
+                    console.error(err);
+                });
         }
     }
 
@@ -121,6 +158,8 @@ export default function Advice() {
                         className={conversationCardClass}
                         onClick={() => {
                             setCurrentConversation(null);
+                            setCurrentInput('');
+                            setErrorIsShowing(false);
                             inputRef.current?.focus();
                         }}
                     >
@@ -133,6 +172,8 @@ export default function Advice() {
                             key={index}
                             onClick={() => {
                                 setCurrentConversation(conversation);
+                                setCurrentInput('');
+                                setErrorIsShowing(false);
                                 inputRef.current?.focus();
                             }}
                         >
@@ -156,10 +197,30 @@ export default function Advice() {
                                                 : 'rounded-lg bg-background shadow-md w-fit'
                                         }`}
                                     >
-                                        <span>{message.message}</span>
+                                        <Markdown remarkPlugins={[remarkGfm]}>
+                                            {message.message}
+                                        </Markdown>
                                     </div>
                                 </div>
                             ))}
+                        {isWaitingForResponse && (
+                            <div className="flex flex-row gap-2 mx-10 items-center text-gray-400">
+                                <TailSpin
+                                    visible={true}
+                                    height="20"
+                                    width="20"
+                                    color="#9CA3AF"
+                                    radius="4"
+                                    ariaLabel="oval-loading"
+                                />
+                                <span>Waiting for response...</span>
+                            </div>
+                        )}
+                        {errorIsShowing && (
+                            <div className="flex flex-row gap-2 mx-10 items-center text-red-500">
+                                <span>Error: Something went wrong. Please try again.</span>
+                            </div>
+                        )}
                     </div>
 
                     <div

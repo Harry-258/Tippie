@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 import {getAllConversations, getConversation, processChat} from "../services/chat.service.js";
 
+export const giveMockResponse = async (req: Request, res: Response) => {
+    res.status(200).json({ reply: { reply: 'Hello, this is a mock response from the backend.' } });
+}
+
 export const handleNewChatMessage = async (req: Request, res: Response) => {
     try {
         const uid = req.user!.uid;
