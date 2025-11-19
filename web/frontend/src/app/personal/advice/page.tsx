@@ -10,10 +10,12 @@ import { auth } from '@/firebase/firebaseClient';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { TailSpin } from 'react-loader-spinner';
+import { fetchUserConversations } from '@/app/util/apiCalls';
 
 export default function Advice() {
     // TODO: Make conversation always show the latest message, even when it's scrollable
 
+    const [conversations, setConversations] = useState<Conversation[]>([]);
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>();
     const [currentInput, setCurrentInput] = useState<string>('');
     const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
@@ -23,25 +25,6 @@ export default function Advice() {
 
     const conversationCardClass =
         'flex items-center hover:bg-gray-300 gap-1 py-2 p-1 px-6 hover:cursor-pointer mx-1 rounded-md';
-
-    // TODO: replace this with backend call
-    const [conversations, setConversations] = useState<Conversation[]>([
-        // {
-        //     title: 'Investment advice',
-        //     messages: [
-        //         {
-        //             message: 'Bro waddup',
-        //             timestamp: 0,
-        //             sender: MessageSender.User,
-        //         },
-        //         {
-        //             message: 'Not much wassup with u',
-        //             timestamp: 1,
-        //             sender: MessageSender.Agent,
-        //         },
-        //     ],
-        // },
-    ]);
 
     async function submitMessage() {
         setErrorIsShowing(false);
@@ -92,7 +75,7 @@ export default function Advice() {
                 });
             }
 
-            fetch('http://localhost:4000/api/chat/test', {
+            fetch('http://localhost:4000/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -127,6 +110,18 @@ export default function Advice() {
                     console.error(err);
                 });
         }
+    }
+
+    async function getUserConversations() {
+        const user = auth.currentUser;
+        if (!user) {
+            console.error('User is not authenticated');
+            return;
+        }
+
+        const token = await user.getIdToken();
+
+        await fetchUserConversations(token, setConversations);
     }
 
     useEffect(() => {

@@ -1,12 +1,40 @@
 import {firestore, FieldValue} from "../config/firebase.config.js";
 import {Content, GoogleGenerativeAI, HarmBlockThreshold, HarmCategory} from "@google/generative-ai";
+import {ChatMessage, Document} from "../util/types.js";
 
 export async function getConversation(uid: string, conversationId: string) {
-
+    // try {
+    //
+    // }
 }
 
-export async function getAllConversations(uid: string) {
+export async function getAllConversations(uid: string): Promise<Document[]> {
+    try {
+        let result: Document[] = [];
 
+        const conversationsRef = await firestore.collection('users')
+            .doc(uid)
+            .collection('conversations')
+            .get();
+
+        if (conversationsRef.empty) {
+            return [];
+        }
+
+        for (const document of conversationsRef.docs) {
+            const data = document.data();
+
+            result.push({
+                title: data.title,
+                id: document.id,
+            });
+        }
+
+        return result;
+    } catch (error) {
+        console.error(`Error getting all conversations: ` + error);
+        return [];
+    }
 }
 
 // export async function processChat(uid: string, message: string) {
@@ -21,12 +49,6 @@ export async function getAllConversations(uid: string) {
 //
 //     return response.output_text;
 // }
-
-interface ChatMessage {
-    role: "user" | "model";
-    parts: { text: string }[];
-    timestamp?: FirebaseFirestore.Timestamp | FieldValue;
-}
 
 export const processChat = async (
     uid: string,
