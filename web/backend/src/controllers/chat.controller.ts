@@ -30,7 +30,7 @@ export const getUserConversations = async (req: Request, res: Response) => {
         const conversations = await getAllConversations(uid);
 
         res.status(200).json({ conversations });
-    } catch  (error) {
+    } catch (error) {
         console.error('Error while getting conversations in chat controller:', error);
         res.status(500).send('Internal Server Error');
     }
@@ -52,7 +52,7 @@ export const getConversationDetails = async (req: Request, res: Response) => {
         }
 
         res.status(200).json({ conversation });
-    } catch  (error) {
+    } catch (error) {
         console.error('Error while getting conversations in chat controller:', error);
         res.status(500).send('Internal Server Error');
     }

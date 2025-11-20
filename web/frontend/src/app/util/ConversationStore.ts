@@ -1,5 +1,10 @@
-import { Conversation, ConversationTitle, MessageSender, Message } from '@/app/util/types';
-import { clearTimeout } from 'node:timers';
+import {
+    Conversation,
+    ConversationMessage,
+    ConversationTitle,
+    Message,
+    MessageSender,
+} from '@/app/util/types';
 
 export class ConversationStore {
     private static instance: ConversationStore;
@@ -73,10 +78,12 @@ export class ConversationStore {
             for (const message of data.conversation) {
                 messages.push({
                     message: message.parts,
-                    timestamp: 0, // TODO: change
-                    sender: message.role as MessageSender,
+                    timestamp: message.timestamp,
+                    sender: message.role === 'Agent' ? MessageSender.Agent : MessageSender.User,
                 } as Message);
             }
+
+            messages.sort((a, b) => a.timestamp - b.timestamp);
 
             const newConversation: Conversation = {
                 messages: messages,
@@ -91,58 +98,127 @@ export class ConversationStore {
         }
     }
 
-    // public async sendMessage(message: string, timeout: NodeJS.Timeout) {
-    //     if (!this.currentConversation) {
-    //
-    //     }
-    //
-    //
-    //
-    //
-    //     const reply: string = await this.postMessage(this.currentConversation?.id, message);
-    //
-    //     clearTimeout(timeout);
-    //
-    //     if (conversationId === this.currentConversation?.id) {
-    //         this.currentConversation.messages.push({
-    //             message: message,
-    //             sender: MessageSender.User,
-    //             timestamp: 0, // TODO: replace this
-    //         });
-    //         this.currentConversation.messages.push({
-    //             message: reply,
-    //             sender: MessageSender.Agent,
-    //             timestamp: 0, // TODO: replace this
-    //         })
-    //     } else {
-    //         // TODO: fetch the current conversation
-    //     }
-    // }
-
-    private async postMessage(
-        conversationId: string,
-        message: string,
-        authToken: string
-    ): Promise<string> {
+    /**
+     * Sends the message to the backend. If there is no current conversation, it creates a new one. Otherwise,
+     * it appends the user message and the agent reply to the current conversation.
+     *
+     * **Warning**: this function does not fetch any new messages that may have appeared between initially loading
+     * the conversation and sending the message passed as an argument. I chose to do this to minimize API calls
+     * for the minimal working version of the platform. In the future, this case should be handled properly.
+     *
+     * @param message The message to be sent to the backend.
+     * @param authToken The token used to authorize the backend request.
+     */
+    public async sendMessage(message: string, authToken: string) {
         try {
+            if (!this.currentConversation) {
+                const reply: ConversationMessage = await this.postMessage(message, authToken);
+
+                this.currentConversation = {
+                    id: reply.conversationId,
+                    messages: [
+                        {
+                            message: message,
+                            timestamp: reply.timestamp,
+                            sender: MessageSender.User,
+                        },
+                        {
+                            message: reply.message,
+                            timestamp: reply.timestamp + 1,
+                            sender: MessageSender.Agent,
+                        },
+                    ],
+                };
+
+                this.allConversations.push({
+                    title: message.substring(0, 40),
+                    id: reply.conversationId,
+                });
+            } else {
+                const reply: ConversationMessage = await this.postMessage(
+                    message,
+                    authToken,
+                    this.currentConversation.id
+                );
+
+                const newUserMessage = {
+                    message: message,
+                    timestamp: reply.timestamp,
+                    sender: MessageSender.User,
+                };
+                const newAgentMessage = {
+                    message: reply.message,
+                    timestamp: reply.timestamp + 1,
+                    sender: MessageSender.Agent,
+                };
+
+                this.currentConversation.messages.push(newUserMessage);
+                this.currentConversation.messages.push(newAgentMessage);
+            }
+        } catch (error) {
+            console.error('Error sending message: ' + error);
+        }
+    }
+
+    /**
+     * Getter function for the current conversation.
+     */
+    public getCurrentConversation(): Conversation | null {
+        return this.currentConversation;
+    }
+
+    /**
+     * Getter function for all the conversation title-ID pairs
+     */
+    public getAllConversations(): ConversationTitle[] {
+        return this.allConversations;
+    }
+
+    /**
+     * Makes a POST request to the backend with the message and an optional conversation ID. Returns the response from the AI agent.
+     * @param message The message to be sent in the body of the request.
+     * @param authToken The token used to authorize the API call.
+     * @param conversationId The ID of the conversation to continue. If not provided, the backend will create a new conversation.
+     * @returns A string containing the response from the backend.
+     * @private Only used by the conversation store to make API calls. Shouldn't be exposed
+     * since the conversation store is optimized to make the least amount of API calls possible.
+     */
+    private async postMessage(
+        message: string,
+        authToken: string,
+        conversationId?: string
+    ): Promise<ConversationMessage> {
+        try {
+            const requestBody: { message: string; conversationId?: string } = {
+                message,
+            };
+            if (conversationId) {
+                requestBody.conversationId = conversationId;
+            }
+
             const response = await fetch('http://localhost:4000/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${authToken}`,
                 },
-                body: JSON.stringify({
-                    conversationId: conversationId,
-                    message: message,
-                }),
+                body: JSON.stringify(requestBody),
             });
 
             const data = await response.json();
 
-            return data.reply.reply as string;
+            return {
+                conversationId: data.reply.conversationId,
+                message: data.reply.reply as string,
+                timestamp: data.reply.timestamp,
+            };
         } catch (error) {
             console.error('Error sending message: ' + error);
-            return '';
+            return {
+                conversationId: '',
+                message: '',
+                timestamp: 0,
+            };
         }
     }
 }

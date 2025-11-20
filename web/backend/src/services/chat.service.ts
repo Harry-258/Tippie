@@ -62,19 +62,6 @@ export async function getAllConversations(uid: string): Promise<Document[]> {
     }
 }
 
-// export async function processChat(uid: string, message: string) {
-//     // TODO: add past messages to prompt or create a new one from template if it's the first message
-//     const prompt = "" + message;
-//
-//
-//
-//     console.log(response.output_text);
-//
-//     // TODO: save response to database
-//
-//     return response.output_text;
-// }
-
 export const processChat = async (
     uid: string,
     userMessage: string,
@@ -132,7 +119,7 @@ export const processChat = async (
 
         const result = await chat.sendMessage(userMessage);
         const aiResponseText = result.response.text();
-        const timestamp = FieldValue.serverTimestamp();
+        const timestamp = Date.now();
 
         // 4. Save new messages to Firestore
         const newUserMessage: ChatMessage = {
@@ -144,7 +131,7 @@ export const processChat = async (
         const newAiMessage: ChatMessage = {
             role: "Agent",
             parts: [{ text: aiResponseText }],
-            timestamp: timestamp,
+            timestamp: timestamp + 1,
         };
 
         // Use Promise.all to write both new messages concurrently
@@ -157,6 +144,7 @@ export const processChat = async (
         return {
             reply: aiResponseText,
             conversationId: convoRef.id,
+            timestamp: timestamp,
         };
 
     } catch (error) {

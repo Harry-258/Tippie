@@ -76,3 +76,9 @@ export type ConversationTitle = {
     title: string;
     id: string;
 };
+
+export type ConversationMessage = {
+    conversationId: string;
+    message: string;
+    timestamp: number;
+};

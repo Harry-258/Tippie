@@ -8,5 +8,5 @@ export type Document = {
 export interface ChatMessage {
     role: "User" | "Agent";
     parts: { text: string }[];
-    timestamp?: FirebaseFirestore.Timestamp | FieldValue;
+    timestamp?: number;
 }

@@ -14,124 +14,74 @@ import { ConversationStore } from '@/app/util/ConversationStore';
 
 export default function Advice() {
     // TODO: Make conversation always show the latest message, even when it's scrollable
-    // TODO: Change onClick method for button
 
     const [conversations, setConversations] = useState<ConversationTitle[]>([]);
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>();
     const [currentInput, setCurrentInput] = useState<string>('');
     const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
     const [errorIsShowing, setErrorIsShowing] = useState<boolean>(false);
-    // const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
+
     const inputRef = useRef<HTMLInputElement>(null);
+    const scrollableAreaRef = useRef<HTMLDivElement>(null);
+
     const conversationStore = ConversationStore.getInstance();
 
     const conversationCardClass =
         'flex items-center hover:bg-gray-300 gap-1 py-2 p-1 px-6 hover:cursor-pointer mx-1 rounded-md';
 
-    // async function submitMessage() {
-    //     setErrorIsShowing(false);
-    //     // if (loadingTimeout) {
-    //     //     clearTimeout(loadingTimeout);
-    //     // }
-    //
-    //     const currentInputText = currentInput.trim();
-    //     setCurrentInput('');
-    //
-    //     if (currentInputText !== '') {
-    //         setLoadingTimeout(
-    //             setTimeout(() => {
-    //                 setErrorIsShowing(true);
-    //                 setIsWaitingForResponse(false);
-    //             }, 10000)
-    //         );
-    //
-    //         setIsWaitingForResponse(true);
-    //
-    //         const user = auth.currentUser;
-    //         if (!user) {
-    //             console.error('User is not authenticated');
-    //             return;
-    //         }
-    //
-    //         const token = await user.getIdToken();
-    //
-    //         const newMessage = {
-    //             message: currentInputText,
-    //             timestamp: new Date().getTime(),
-    //             sender: MessageSender.User,
-    //         };
-    //         const currentMessages = (currentConversation?.messages ?? []).concat(newMessage);
-    //         const currentTitle = currentConversation?.title ?? 'Get title from backend';
-    //
-    //         if (!currentConversation) {
-    //             const newConvo = {
-    //                 messages: [newMessage],
-    //                 title: currentTitle,
-    //             };
-    //             setCurrentConversation(newConvo);
-    //             setConversations(conversations.concat(newConvo));
-    //         } else {
-    //             setCurrentConversation({
-    //                 messages: currentMessages,
-    //                 title: currentTitle,
-    //             });
-    //         }
-    //
-    //         fetch('http://localhost:4000/api/chat', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 Authorization: `Bearer ${token}`,
-    //             },
-    //             body: JSON.stringify({
-    //                 message: currentInputText,
-    //             }),
-    //         })
-    //             .then(res => res.json())
-    //             .then(data => {
-    //                 const replyMessage: string = data.reply.reply;
-    //
-    //                 const newResponseMessage = {
-    //                     message: replyMessage,
-    //                     timestamp: new Date().getTime(),
-    //                     sender: MessageSender.Agent,
-    //                 };
-    //                 // TODO: add new title
-    //                 setCurrentConversation({
-    //                     messages: currentMessages.concat(newResponseMessage),
-    //                     title: currentTitle,
-    //                 });
-    //
-    //                 setIsWaitingForResponse(false);
-    //                 clearTimeout(loadingTimeout);
-    //             })
-    //             .catch(err => {
-    //                 clearTimeout(loadingTimeout);
-    //                 setIsWaitingForResponse(false);
-    //                 setErrorIsShowing(true);
-    //                 console.error(err);
-    //             });
-    //     }
-    // }
+    /**
+     * Scrolls the div element that contains all the messages from the current conversation to the bottom.
+     */
+    function scrollToBottom() {
+        scrollableAreaRef.current?.scrollTo({
+            top: scrollableAreaRef.current.scrollHeight,
+            behavior: 'smooth',
+        });
+    }
 
-    // async function submitMessage() {
-    //     setErrorIsShowing(false);
-    //
-    //     const currentInputText = currentInput.trim();
-    //     if (currentInputText === '') {
-    //         return;
-    //     }
-    //
-    //     const timeout = setTimeout(() => {
-    //         setErrorIsShowing(true);
-    //         setIsWaitingForResponse(false);
-    //     }, 10000);
-    //
-    //     // TODO: get conversation id
-    //     const conversationId = "conversation id";
-    //
-    //
-    // }
+    /**
+     * Handles the logic for submitting messages.
+     */
+    async function submitMessage() {
+        // Stop showing any error messages
+        setErrorIsShowing(false);
+        setIsWaitingForResponse(true);
+
+        // Save the message and clear the input. Don't do anything if the input is empty.
+        const currentInputText = currentInput.trim();
+        if (currentInputText === '') {
+            return;
+        }
+        setCurrentInput('');
+
+        // Get the authorization token
+        const user = auth.currentUser;
+        if (!user) {
+            console.error('User is not authenticated');
+            return;
+        }
+
+        const token = await user.getIdToken();
+
+        // Set a timeout for the request, after which it will show the error message
+        const timeout: NodeJS.Timeout = setTimeout(() => {
+            setErrorIsShowing(true);
+            setIsWaitingForResponse(false);
+        }, 10000);
+
+        // Send the message using the conversation store.
+        await conversationStore.sendMessage(currentInputText, token);
+
+        clearTimeout(timeout);
+
+        setCurrentConversation(conversationStore.getCurrentConversation());
+        setConversations(conversationStore.getAllConversations());
+        setIsWaitingForResponse(false);
+
+        setTimeout(() => {
+            scrollToBottom();
+        }, 100);
+    }
 
     useEffect(() => {
         async function getUserConversations() {
@@ -146,12 +96,14 @@ export default function Advice() {
         }
 
         getUserConversations();
+    }, []);
 
+    useEffect(() => {
         window.addEventListener('keydown', keyboardShortcutHandler);
         inputRef.current?.focus();
 
         return () => window.removeEventListener('keydown', keyboardShortcutHandler);
-    }, []);
+    });
 
     /**
      * Switches the current conversation to the one with the provided ID.
@@ -171,15 +123,18 @@ export default function Advice() {
         const token = await user.getIdToken();
 
         setCurrentConversation(await conversationStore.fetchConversation(conversationId, token));
+        setTimeout(() => {
+            scrollToBottom();
+        }, 100);
     }
 
     /**
      * Handles the shortcuts for the `/personal/advice` page.
      * @param event the event that comes from pressing a key or combination of keys
      */
-    function keyboardShortcutHandler(event: KeyboardEvent) {
+    async function keyboardShortcutHandler(event: KeyboardEvent) {
         if (event.key === 'Enter') {
-            // submitMessage();
+            await submitMessage();
         }
     }
 
@@ -215,7 +170,10 @@ export default function Advice() {
                 </div>
 
                 <div className="h-full w-full flex flex-col justify-between">
-                    <div className="flex flex-col gap-4 overflow-y-auto pb-10 mt-6">
+                    <div
+                        className="flex flex-col gap-4 overflow-y-auto pb-10 mt-6 mb-4"
+                        ref={scrollableAreaRef}
+                    >
                         {currentConversation &&
                             currentConversation.messages.map((message, index: number) => (
                                 <div
@@ -266,8 +224,7 @@ export default function Advice() {
                             value={currentInput}
                             onChange={event => setCurrentInput(event.target.value)}
                         />
-                        {/*<div className="m-4 hover:cursor-pointer" onClick={submitMessage}>*/}
-                        <div className="m-4 hover:cursor-pointer" onClick={() => {}}>
+                        <div className="m-4 hover:cursor-pointer" onClick={submitMessage}>
                             <ArrowCircleUpIcon
                                 size={30}
                                 className="text-gray-400 hover:text-gray-500"
