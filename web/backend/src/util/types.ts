@@ -5,9 +5,8 @@ export type Document = {
     id: string;
 }
 
-export
-interface ChatMessage {
-    role: "user" | "model";
+export interface ChatMessage {
+    role: "User" | "Agent";
     parts: { text: string }[];
     timestamp?: FirebaseFirestore.Timestamp | FieldValue;
 }

@@ -8,13 +8,13 @@ export const giveMockResponse = async (req: Request, res: Response) => {
 export const handleNewChatMessage = async (req: Request, res: Response) => {
     try {
         const uid = req.user!.uid;
-        const { message } = req.body;
+        const { message, conversationId } = req.body;
 
         if (!message) {
             return res.status(400).send('Bad Request: "message" is required.');
         }
 
-        const aiResponse = await processChat(uid, message);
+        const aiResponse = await processChat(uid, message, conversationId);
 
         res.status(200).json({ reply: aiResponse });
     } catch (error) {

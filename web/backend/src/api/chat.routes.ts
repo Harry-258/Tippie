@@ -11,7 +11,7 @@ const chatRouter = Router();
 
 chatRouter.post('/', checkAuth, handleNewChatMessage);
 chatRouter.get('/', checkAuth, getUserConversations);
-chatRouter.get('/:conversationId', checkAuth, getConversationDetails);
+chatRouter.get('/conversation/:conversationId', checkAuth, getConversationDetails);
 
 chatRouter.post('/test', checkAuth, giveMockResponse);
 

@@ -3,48 +3,138 @@
 import TileGrid from '@/app/components/TileGrid';
 import Tile from '@/app/components/Tile';
 import React, { useEffect, useRef, useState } from 'react';
-import { Conversation, MessageSender } from '@/app/util/types';
+import { Conversation, ConversationTitle, MessageSender } from '@/app/util/types';
 import { ArrowCircleUpIcon, PlusCircleIcon } from '@phosphor-icons/react';
 import { iconSize } from '@/app/util/util';
 import { auth } from '@/firebase/firebaseClient';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { TailSpin } from 'react-loader-spinner';
-import { fetchUserConversations } from '@/app/util/apiCalls';
+import { ConversationStore } from '@/app/util/ConversationStore';
 
 export default function Advice() {
     // TODO: Make conversation always show the latest message, even when it's scrollable
+    // TODO: Change onClick method for button
 
-    const [conversations, setConversations] = useState<Conversation[]>([]);
+    const [conversations, setConversations] = useState<ConversationTitle[]>([]);
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>();
     const [currentInput, setCurrentInput] = useState<string>('');
     const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
     const [errorIsShowing, setErrorIsShowing] = useState<boolean>(false);
-    const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
+    // const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const conversationStore = ConversationStore.getInstance();
 
     const conversationCardClass =
         'flex items-center hover:bg-gray-300 gap-1 py-2 p-1 px-6 hover:cursor-pointer mx-1 rounded-md';
 
-    async function submitMessage() {
-        setErrorIsShowing(false);
-        if (loadingTimeout) {
-            clearTimeout(loadingTimeout);
-        }
+    // async function submitMessage() {
+    //     setErrorIsShowing(false);
+    //     // if (loadingTimeout) {
+    //     //     clearTimeout(loadingTimeout);
+    //     // }
+    //
+    //     const currentInputText = currentInput.trim();
+    //     setCurrentInput('');
+    //
+    //     if (currentInputText !== '') {
+    //         setLoadingTimeout(
+    //             setTimeout(() => {
+    //                 setErrorIsShowing(true);
+    //                 setIsWaitingForResponse(false);
+    //             }, 10000)
+    //         );
+    //
+    //         setIsWaitingForResponse(true);
+    //
+    //         const user = auth.currentUser;
+    //         if (!user) {
+    //             console.error('User is not authenticated');
+    //             return;
+    //         }
+    //
+    //         const token = await user.getIdToken();
+    //
+    //         const newMessage = {
+    //             message: currentInputText,
+    //             timestamp: new Date().getTime(),
+    //             sender: MessageSender.User,
+    //         };
+    //         const currentMessages = (currentConversation?.messages ?? []).concat(newMessage);
+    //         const currentTitle = currentConversation?.title ?? 'Get title from backend';
+    //
+    //         if (!currentConversation) {
+    //             const newConvo = {
+    //                 messages: [newMessage],
+    //                 title: currentTitle,
+    //             };
+    //             setCurrentConversation(newConvo);
+    //             setConversations(conversations.concat(newConvo));
+    //         } else {
+    //             setCurrentConversation({
+    //                 messages: currentMessages,
+    //                 title: currentTitle,
+    //             });
+    //         }
+    //
+    //         fetch('http://localhost:4000/api/chat', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //             body: JSON.stringify({
+    //                 message: currentInputText,
+    //             }),
+    //         })
+    //             .then(res => res.json())
+    //             .then(data => {
+    //                 const replyMessage: string = data.reply.reply;
+    //
+    //                 const newResponseMessage = {
+    //                     message: replyMessage,
+    //                     timestamp: new Date().getTime(),
+    //                     sender: MessageSender.Agent,
+    //                 };
+    //                 // TODO: add new title
+    //                 setCurrentConversation({
+    //                     messages: currentMessages.concat(newResponseMessage),
+    //                     title: currentTitle,
+    //                 });
+    //
+    //                 setIsWaitingForResponse(false);
+    //                 clearTimeout(loadingTimeout);
+    //             })
+    //             .catch(err => {
+    //                 clearTimeout(loadingTimeout);
+    //                 setIsWaitingForResponse(false);
+    //                 setErrorIsShowing(true);
+    //                 console.error(err);
+    //             });
+    //     }
+    // }
 
-        const currentInputText = currentInput.trim();
-        setCurrentInput('');
+    // async function submitMessage() {
+    //     setErrorIsShowing(false);
+    //
+    //     const currentInputText = currentInput.trim();
+    //     if (currentInputText === '') {
+    //         return;
+    //     }
+    //
+    //     const timeout = setTimeout(() => {
+    //         setErrorIsShowing(true);
+    //         setIsWaitingForResponse(false);
+    //     }, 10000);
+    //
+    //     // TODO: get conversation id
+    //     const conversationId = "conversation id";
+    //
+    //
+    // }
 
-        if (currentInputText !== '') {
-            setLoadingTimeout(
-                setTimeout(() => {
-                    setErrorIsShowing(true);
-                    setIsWaitingForResponse(false);
-                }, 10000)
-            );
-
-            setIsWaitingForResponse(true);
-
+    useEffect(() => {
+        async function getUserConversations() {
             const user = auth.currentUser;
             if (!user) {
                 console.error('User is not authenticated');
@@ -52,67 +142,26 @@ export default function Advice() {
             }
 
             const token = await user.getIdToken();
-
-            const newMessage = {
-                message: currentInputText,
-                timestamp: new Date().getTime(),
-                sender: MessageSender.User,
-            };
-            const currentMessages = (currentConversation?.messages ?? []).concat(newMessage);
-            const currentTitle = currentConversation?.title ?? 'Get title from backend';
-
-            if (!currentConversation) {
-                const newConvo = {
-                    messages: [newMessage],
-                    title: currentTitle,
-                };
-                setCurrentConversation(newConvo);
-                setConversations(conversations.concat(newConvo));
-            } else {
-                setCurrentConversation({
-                    messages: currentMessages,
-                    title: currentTitle,
-                });
-            }
-
-            fetch('http://localhost:4000/api/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    message: currentInputText,
-                }),
-            })
-                .then(res => res.json())
-                .then(data => {
-                    const replyMessage: string = data.reply.reply;
-
-                    const newResponseMessage = {
-                        message: replyMessage,
-                        timestamp: new Date().getTime(),
-                        sender: MessageSender.Agent,
-                    };
-                    // TODO: add new title
-                    setCurrentConversation({
-                        messages: currentMessages.concat(newResponseMessage),
-                        title: currentTitle,
-                    });
-
-                    setIsWaitingForResponse(false);
-                    clearTimeout(loadingTimeout);
-                })
-                .catch(err => {
-                    clearTimeout(loadingTimeout);
-                    setIsWaitingForResponse(false);
-                    setErrorIsShowing(true);
-                    console.error(err);
-                });
+            setConversations(await conversationStore.fetchUserConversations(token));
         }
-    }
 
-    async function getUserConversations() {
+        getUserConversations();
+
+        window.addEventListener('keydown', keyboardShortcutHandler);
+        inputRef.current?.focus();
+
+        return () => window.removeEventListener('keydown', keyboardShortcutHandler);
+    }, []);
+
+    /**
+     * Switches the current conversation to the one with the provided ID.
+     * @param conversationId The ID associated with the conversation to be switched to.
+     */
+    async function switchCurrentConversation(conversationId: string) {
+        setCurrentInput('');
+        setErrorIsShowing(false);
+        inputRef.current?.focus();
+
         const user = auth.currentUser;
         if (!user) {
             console.error('User is not authenticated');
@@ -121,15 +170,8 @@ export default function Advice() {
 
         const token = await user.getIdToken();
 
-        await fetchUserConversations(token, setConversations);
+        setCurrentConversation(await conversationStore.fetchConversation(conversationId, token));
     }
-
-    useEffect(() => {
-        window.addEventListener('keydown', keyboardShortcutHandler);
-        inputRef.current?.focus();
-
-        return () => window.removeEventListener('keydown', keyboardShortcutHandler);
-    });
 
     /**
      * Handles the shortcuts for the `/personal/advice` page.
@@ -137,7 +179,7 @@ export default function Advice() {
      */
     function keyboardShortcutHandler(event: KeyboardEvent) {
         if (event.key === 'Enter') {
-            submitMessage();
+            // submitMessage();
         }
     }
 
@@ -161,16 +203,11 @@ export default function Advice() {
                         <PlusCircleIcon className="text-primary" size={iconSize} />
                         <span className="truncate">New Conversation</span>
                     </div>
-                    {conversations.map((conversation: Conversation, index: number) => (
+                    {conversations.map((conversation: ConversationTitle, index: number) => (
                         <div
                             className={conversationCardClass}
                             key={index}
-                            onClick={() => {
-                                setCurrentConversation(conversation);
-                                setCurrentInput('');
-                                setErrorIsShowing(false);
-                                inputRef.current?.focus();
-                            }}
+                            onClick={() => switchCurrentConversation(conversation.id)}
                         >
                             <span className="truncate">{conversation.title}</span>
                         </div>
@@ -222,13 +259,15 @@ export default function Advice() {
                         className={`w-auto mx-6 mb-6 rounded-lg shadow-md bg-background text-primary flex justify-between`}
                     >
                         <input
+                            disabled={isWaitingForResponse}
                             placeholder="Ask anything"
                             ref={inputRef}
                             className={'w-full h-full p-4 rounded-lg focus:outline-none'}
                             value={currentInput}
                             onChange={event => setCurrentInput(event.target.value)}
                         />
-                        <div className="m-4 hover:cursor-pointer" onClick={submitMessage}>
+                        {/*<div className="m-4 hover:cursor-pointer" onClick={submitMessage}>*/}
+                        <div className="m-4 hover:cursor-pointer" onClick={() => {}}>
                             <ArrowCircleUpIcon
                                 size={30}
                                 className="text-gray-400 hover:text-gray-500"

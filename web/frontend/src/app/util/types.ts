@@ -69,6 +69,10 @@ export enum MessageSender {
 
 export type Conversation = {
     messages: Message[];
+    id: string;
+};
+
+export type ConversationTitle = {
     title: string;
     id: string;
 };

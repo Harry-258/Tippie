@@ -3,9 +3,34 @@ import {Content, GoogleGenerativeAI, HarmBlockThreshold, HarmCategory} from "@go
 import {ChatMessage, Document} from "../util/types.js";
 
 export async function getConversation(uid: string, conversationId: string) {
-    // try {
-    //
-    // }
+    try {
+        let result: ChatMessage[] = [];
+
+        const conversationRef = await firestore.collection('users')
+            .doc(uid)
+            .collection('conversations')
+            .doc(conversationId)
+            .collection('messages')
+            .get();
+
+        if (conversationRef.empty) {
+            return [];
+        }
+
+        for (const conversation of conversationRef.docs) {
+            const data = conversation.data();
+
+            result.push({
+                parts: data.parts[0].text,
+                role: data.role,
+                timestamp: data.timestamp,
+            })
+        }
+
+        return result;
+    } catch (error) {
+        console.error("Error getting conversation details from database: " + error);
+    }
 }
 
 export async function getAllConversations(uid: string): Promise<Document[]> {
@@ -86,39 +111,40 @@ export const processChat = async (
         const messagesRef = convoRef.collection('messages');
 
         // 2. Fetch Chat History from Firestore
-        const historySnapshot = await messagesRef.orderBy('timestamp', 'desc').limit(20).get();
-
-        const firestoreHistory: ChatMessage[] = [];
-        historySnapshot.docs.forEach(doc => {
-            firestoreHistory.push(doc.data() as ChatMessage);
-        });
+        // const historySnapshot = await messagesRef.orderBy('timestamp', 'desc').limit(20).get();
+        //
+        // const firestoreHistory: ChatMessage[] = [];
+        // historySnapshot.docs.forEach(doc => {
+        //     firestoreHistory.push(doc.data() as ChatMessage);
+        // });
 
         // Reverse to be in chronological order and map to the required format
-        const history: Content[] = firestoreHistory.reverse().map(msg => ({
-            role: msg.role,
-            parts: msg.parts,
-        }));
+        // const history: Content[] = firestoreHistory.reverse().map(msg => ({
+        //     role: msg.role,
+        //     parts: msg.text,
+        // }));
 
         // 3. Call the Gemini API
         const chat = model.startChat({
-            history: history,
+            // history: [],
             safetySettings,
         });
 
         const result = await chat.sendMessage(userMessage);
         const aiResponseText = result.response.text();
+        const timestamp = FieldValue.serverTimestamp();
 
         // 4. Save new messages to Firestore
         const newUserMessage: ChatMessage = {
-            role: "user",
+            role: "User",
             parts: [{ text: userMessage }],
-            timestamp: FieldValue.serverTimestamp(),
+            timestamp: timestamp,
         };
 
         const newAiMessage: ChatMessage = {
-            role: "model",
+            role: "Agent",
             parts: [{ text: aiResponseText }],
-            timestamp: FieldValue.serverTimestamp(),
+            timestamp: timestamp,
         };
 
         // Use Promise.all to write both new messages concurrently
