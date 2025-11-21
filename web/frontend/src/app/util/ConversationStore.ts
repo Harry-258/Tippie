@@ -24,6 +24,13 @@ export class ConversationStore {
     }
 
     /**
+     * Makes the current conversation null. Useful when starting a new conversation.
+     */
+    public startNewConversation() {
+        this.currentConversation = null;
+    }
+
+    /**
      * Fetches the titles and corresponding IDs of all the conversations the user made.
      * @param authToken The token used to authorize the API call.
      * @return A promise object with an array of `ConversationTitle` instances.
@@ -130,8 +137,13 @@ export class ConversationStore {
                     ],
                 };
 
+                let title: string = message.substring(0, 40);
+                if (message.length > 40) {
+                    title += '...';
+                }
+
                 this.allConversations.push({
-                    title: message.substring(0, 40),
+                    title: title,
                     id: reply.conversationId,
                 });
             } else {
@@ -141,18 +153,18 @@ export class ConversationStore {
                     this.currentConversation.id
                 );
 
-                const newUserMessage = {
-                    message: message,
-                    timestamp: reply.timestamp,
-                    sender: MessageSender.User,
-                };
+                // const newUserMessage = {
+                //     message: message,
+                //     timestamp: reply.timestamp,
+                //     sender: MessageSender.User,
+                // };
                 const newAgentMessage = {
                     message: reply.message,
                     timestamp: reply.timestamp + 1,
                     sender: MessageSender.Agent,
                 };
 
-                this.currentConversation.messages.push(newUserMessage);
+                // this.currentConversation.messages.push(newUserMessage);
                 this.currentConversation.messages.push(newAgentMessage);
             }
         } catch (error) {

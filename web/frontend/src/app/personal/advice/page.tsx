@@ -13,8 +13,6 @@ import { TailSpin } from 'react-loader-spinner';
 import { ConversationStore } from '@/app/util/ConversationStore';
 
 export default function Advice() {
-    // TODO: Make conversation always show the latest message, even when it's scrollable
-
     const [conversations, setConversations] = useState<ConversationTitle[]>([]);
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>();
     const [currentInput, setCurrentInput] = useState<string>('');
@@ -31,12 +29,15 @@ export default function Advice() {
 
     /**
      * Scrolls the div element that contains all the messages from the current conversation to the bottom.
+     * Uses a timeout to make sure the current conversation is loaded and for the operation to look more natural.
      */
     function scrollToBottom() {
-        scrollableAreaRef.current?.scrollTo({
-            top: scrollableAreaRef.current.scrollHeight,
-            behavior: 'smooth',
-        });
+        setTimeout(() => {
+            scrollableAreaRef.current?.scrollTo({
+                top: scrollableAreaRef.current.scrollHeight,
+                behavior: 'smooth',
+            });
+        }, 100);
     }
 
     /**
@@ -69,6 +70,33 @@ export default function Advice() {
             setIsWaitingForResponse(false);
         }, 10000);
 
+        // Add the user message on the frontend. Only for the user to see while fetching the response.
+        if (!currentConversation) {
+            setCurrentConversation({
+                id: '',
+                messages: [
+                    {
+                        message: currentInputText,
+                        sender: MessageSender.User,
+                        timestamp: 0,
+                    },
+                ],
+            });
+        } else {
+            const currentMessages = currentConversation.messages;
+            const currentConversationId = currentConversation.id;
+            currentMessages.push({
+                message: currentInputText,
+                sender: MessageSender.User,
+                timestamp: currentMessages[currentMessages.length - 1].timestamp + 1,
+            });
+
+            setCurrentConversation({
+                id: currentConversationId,
+                messages: currentMessages,
+            });
+        }
+
         // Send the message using the conversation store.
         await conversationStore.sendMessage(currentInputText, token);
 
@@ -78,9 +106,7 @@ export default function Advice() {
         setConversations(conversationStore.getAllConversations());
         setIsWaitingForResponse(false);
 
-        setTimeout(() => {
-            scrollToBottom();
-        }, 100);
+        scrollToBottom();
     }
 
     useEffect(() => {
@@ -123,9 +149,7 @@ export default function Advice() {
         const token = await user.getIdToken();
 
         setCurrentConversation(await conversationStore.fetchConversation(conversationId, token));
-        setTimeout(() => {
-            scrollToBottom();
-        }, 100);
+        scrollToBottom();
     }
 
     /**
@@ -141,18 +165,18 @@ export default function Advice() {
     return (
         <TileGrid rows={1} cols={1}>
             <Tile innerClassName="flex py-0 px-0">
-                <div className="h-full w-1/4 border-r-3 border-background flex flex-col overflow-auto">
-                    <span className="ml-6 mt-6 mb-4 text-primary/70 truncate text-lg">
-                        Conversations:
-                    </span>
+                <div className="h-full w-2/5 border-r-3 border-background flex flex-col overflow-auto pb-10">
+                    <span className="ml-6 mt-6 mb-4 text-primary/70 text-lg">Conversations:</span>
                     <hr className="w-auto mx-4 text-background border-t-2 rounded-full" />
                     <div
                         className={conversationCardClass}
                         onClick={() => {
+                            conversationStore.startNewConversation();
                             setCurrentConversation(null);
                             setCurrentInput('');
                             setErrorIsShowing(false);
                             inputRef.current?.focus();
+                            setConversations(conversationStore.getAllConversations());
                         }}
                     >
                         <PlusCircleIcon className="text-primary" size={iconSize} />

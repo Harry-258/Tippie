@@ -1,5 +1,3 @@
-import {FieldValue} from "@google-cloud/firestore";
-
 export type Document = {
     title: string;
     id: string;

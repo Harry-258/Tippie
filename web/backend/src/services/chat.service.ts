@@ -2,6 +2,12 @@ import {firestore, FieldValue} from "../config/firebase.config.js";
 import {Content, GoogleGenerativeAI, HarmBlockThreshold, HarmCategory} from "@google/generative-ai";
 import {ChatMessage, Document} from "../util/types.js";
 
+/**
+ * Gets all the messages from the conversation with the given ID.
+ * @param uid The ID of the user for which it will retrieve the messages.
+ * @param conversationId The ID of the conversation that contains the messages.
+ * @returns A promise object containing an array of messages.
+ */
 export async function getConversation(uid: string, conversationId: string) {
     try {
         let result: ChatMessage[] = [];
@@ -30,9 +36,15 @@ export async function getConversation(uid: string, conversationId: string) {
         return result;
     } catch (error) {
         console.error("Error getting conversation details from database: " + error);
+        return [];
     }
 }
 
+/**
+ * Gets all the titles and IDs for the users conversations bundled in {@link Document} objects.
+ * @param uid The ID of the user for which to retrieve the conversations.
+ * @returns A promise object with an array of {@link Document} objects.
+ */
 export async function getAllConversations(uid: string): Promise<Document[]> {
     try {
         let result: Document[] = [];
@@ -62,6 +74,12 @@ export async function getAllConversations(uid: string): Promise<Document[]> {
     }
 }
 
+/**
+ *
+ * @param uid
+ * @param userMessage
+ * @param conversationId
+ */
 export const processChat = async (
     uid: string,
     userMessage: string,
@@ -69,11 +87,9 @@ export const processChat = async (
 ) => {
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
-
         const model = genAI.getGenerativeModel({
             model: "gemini-2.5-flash-lite",
         });
-
         const safetySettings = [
             {
                 category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -81,7 +97,7 @@ export const processChat = async (
             },
         ];
 
-        // 1. Get or Create Conversation Reference
+        // Get or Create Conversation Reference
         let convoRef: FirebaseFirestore.DocumentReference;
 
         if (conversationId) {
@@ -89,15 +105,21 @@ export const processChat = async (
         } else {
             // Create a new conversation
             convoRef = firestore.collection('users').doc(uid).collection('conversations').doc();
+
+            let title: string = userMessage.substring(0, 40);
+            if (userMessage.length > 40) {
+                title += "...";
+            }
+
             await convoRef.set({
-                title: userMessage.substring(0, 40) + "...", // Set an initial title
+                title: title,
                 createdAt: new Date(),
             });
         }
 
         const messagesRef = convoRef.collection('messages');
 
-        // 2. Fetch Chat History from Firestore
+        // Fetch Chat History from Firestore
         // const historySnapshot = await messagesRef.orderBy('timestamp', 'desc').limit(20).get();
         //
         // const firestoreHistory: ChatMessage[] = [];
@@ -111,7 +133,7 @@ export const processChat = async (
         //     parts: msg.text,
         // }));
 
-        // 3. Call the Gemini API
+        // Call the Gemini API
         const chat = model.startChat({
             // history: [],
             safetySettings,
@@ -121,34 +143,30 @@ export const processChat = async (
         const aiResponseText = result.response.text();
         const timestamp = Date.now();
 
-        // 4. Save new messages to Firestore
+        // Save new messages to Firestore
         const newUserMessage: ChatMessage = {
             role: "User",
             parts: [{ text: userMessage }],
             timestamp: timestamp,
         };
-
         const newAiMessage: ChatMessage = {
             role: "Agent",
             parts: [{ text: aiResponseText }],
             timestamp: timestamp + 1,
         };
 
-        // Use Promise.all to write both new messages concurrently
         await Promise.all([
             messagesRef.add(newUserMessage),
             messagesRef.add(newAiMessage),
         ]);
 
-        // 5. Return the AI's response and the conversation ID
+        // Return the AI's response, the message timestamp, and the conversation ID
         return {
             reply: aiResponseText,
             conversationId: convoRef.id,
             timestamp: timestamp,
         };
-
     } catch (error) {
         console.error("Error processing chat:", error);
-        throw new Error("Failed to get response from AI");
     }
 };
