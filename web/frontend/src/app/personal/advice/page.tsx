@@ -165,8 +165,8 @@ export default function Advice() {
     return (
         <TileGrid rows={1} cols={1}>
             <Tile innerClassName="flex py-0 px-0">
-                <div className="h-full w-2/5 border-r-3 border-background flex flex-col overflow-auto pb-10">
-                    <span className="ml-6 mt-6 mb-4 text-primary/70 text-lg">Conversations:</span>
+                <div className="w-2/5 border-r-3 border-background flex flex-col overflow-auto pb-10 my-4">
+                    <span className="ml-6 mt-2 mb-4 text-primary/70 text-lg">Conversations:</span>
                     <hr className="w-auto mx-4 text-background border-t-2 rounded-full" />
                     <div
                         className={conversationCardClass}

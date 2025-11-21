@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-
 import Image from 'next/image';
 import { ActionIcon } from '@/app/util/types';
 import React from 'react';
@@ -18,7 +17,7 @@ import { iconSize } from '@/app/util/util';
 import { useAuth } from '@/contexts/authContext';
 
 export default function PersonalLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-    const { loggedIn } = useAuth();
+    const { loggedIn, currentUser } = useAuth();
 
     if (!loggedIn) {
         redirect('/auth/login');
@@ -86,7 +85,9 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
                                 href="/personal/profile"
                                 className="text-lg text-primary font-medium link"
                             >
-                                Jane Smith
+                                {currentUser.displayName
+                                    ? currentUser.displayName
+                                    : currentUser.email}
                             </Link>
                             <span className="rounded-3xl bg-action text-primary px-2 font-medium text-sm">
                                 Waitress

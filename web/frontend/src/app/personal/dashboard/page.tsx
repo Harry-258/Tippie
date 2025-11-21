@@ -15,11 +15,13 @@ import {
 import React from 'react';
 import ChatSuggestion from '@/app/components/ChatSuggestion';
 import { iconSize } from '@/app/util/util';
+import { useAuth } from '@/contexts/authContext';
 
 export default function Dashboard() {
     // TODO tiles: - stocks went up/down?
     // TODO: make sidebar collapsible?
 
+    const { currentUser } = useAuth();
     const [autoTrading, setAutoTrading] = React.useState(false);
 
     function toggleAutoTrading() {
@@ -33,7 +35,10 @@ export default function Dashboard() {
                 innerClassName="flex flex-col gap-4 justify-center ml-2"
                 outerClassName="col-span-full"
             >
-                <span className="text-2xl font-bold">Welcome, Jane!</span>
+                <span className="text-2xl font-bold">
+                    Welcome, {currentUser.displayName ? currentUser.displayName : currentUser.email}
+                    !
+                </span>
                 <span className="text-lg">Balance: 168,8€</span>
             </Tile>
 

@@ -12,7 +12,8 @@ export async function getConversation(uid: string, conversationId: string) {
     try {
         let result: ChatMessage[] = [];
 
-        const conversationRef = await firestore.collection('users')
+        const conversationRef = await firestore
+            .collection('users')
             .doc(uid)
             .collection('conversations')
             .doc(conversationId)
@@ -75,10 +76,11 @@ export async function getAllConversations(uid: string): Promise<Document[]> {
 }
 
 /**
- *
- * @param uid
- * @param userMessage
- * @param conversationId
+ * Calls the API for the AI model and stores the sent message and the response.
+ * @param uid The ID of the user.
+ * @param userMessage The message the user sent.
+ * @param conversationId The ID of the conversation that this message belongs to. If null, it will create a new conversation.
+ * @returns A promise object containing a string with the reply from the AI, a timestamp, and the conversation ID.
  */
 export const processChat = async (
     uid: string,
@@ -118,6 +120,8 @@ export const processChat = async (
         }
 
         const messagesRef = convoRef.collection('messages');
+
+        // TODO: Use history in chat messages
 
         // Fetch Chat History from Firestore
         // const historySnapshot = await messagesRef.orderBy('timestamp', 'desc').limit(20).get();
