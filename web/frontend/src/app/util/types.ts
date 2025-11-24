@@ -82,3 +82,14 @@ export type ConversationMessage = {
     message: string;
     timestamp: number;
 };
+
+export type Tip = {
+    amount: number;
+    timestamp: number;
+};
+
+export type Feedback = {
+    feedback?: string;
+    rating?: number;
+    timestamp: number;
+};

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {addFeedback, addTip, getFeedback, getRatings, getUserTips} from "../services/tip.services.js";
+import {addFeedback, addTip, getFeedbackAndRatings, getUserTips} from "../services/tip.services.js";
 
 export async function tipUser(req: Request, res: Response) {
     try {
@@ -14,7 +14,7 @@ export async function tipUser(req: Request, res: Response) {
 
         await addTip(uid, amount);
 
-        res.status(200);
+        res.status(200).send("OK");
     } catch (error) {
         console.error("Error tipping user: " + error);
         return res.status(500).send("Internal server error: " + error);
@@ -34,26 +34,13 @@ export async function getAllUserTips(req: Request, res: Response) {
     }
 }
 
-export async function getAllRatings(req: Request, res: Response) {
-    try {
-        const uid = req.user!.uid;
-
-        const ratings = await getRatings(uid);
-
-        return res.status(200).json(ratings);
-    } catch (error) {
-        console.error("Error getting ratings: " + error);
-        return res.status(500).send("Internal server error: " + error);
-    }
-}
-
-export async function getAllFeedback(req: Request, res: Response) {
+export async function getAllFeedbackAndRatings(req: Request, res: Response) {
     try {
         const uid = req.user!.uid;
         
-        const feedback = await getFeedback(uid);
+        const feedbackAndRatings = await getFeedbackAndRatings(uid);
         
-        return res.status(200).json(feedback);
+        return res.status(200).json(feedbackAndRatings);
     } catch (error) {
         console.error("Error getting feedback in controller: " + error);
         return res.status(500).send("Internal server error: " + error);

@@ -1,8 +1,7 @@
 import express from "express";
 import {checkAuth} from "../middleware/auth.middleware.js";
 import {
-    getAllFeedback,
-    getAllRatings,
+    getAllFeedbackAndRatings,
     getAllUserTips,
     leaveFeedback,
     tipUser
@@ -13,7 +12,6 @@ const tipRouter = express.Router();
 tipRouter.post("/", checkAuth, tipUser);
 tipRouter.get("/", checkAuth, getAllUserTips);
 tipRouter.post("/feedback", checkAuth, leaveFeedback);
-tipRouter.get("/feedback", checkAuth, getAllFeedback);
-tipRouter.get("/rating", checkAuth, getAllRatings);
+tipRouter.get("/feedback", checkAuth, getAllFeedbackAndRatings);
 
 export default tipRouter;
