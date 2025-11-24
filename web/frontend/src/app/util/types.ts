@@ -93,3 +93,8 @@ export type Feedback = {
     rating?: number;
     timestamp: number;
 };
+
+export type Analytics = {
+    feedback: Feedback[];
+    tips: Tip[];
+};

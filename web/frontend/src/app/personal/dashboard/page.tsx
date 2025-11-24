@@ -11,23 +11,57 @@ import {
     BriefcaseIcon,
     ArrowUpRightIcon,
     ChartLineUpIcon,
+    StarIcon,
 } from '@phosphor-icons/react';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ChatSuggestion from '@/app/components/ChatSuggestion';
-import { iconSize } from '@/app/util/util';
+import { AnalyticsContext, iconSize } from '@/app/util/util';
 import { useAuth } from '@/contexts/authContext';
+import styled from '@emotion/styled';
+import Rating from '@mui/material/Rating';
+
+const StyledRating = styled(Rating)({
+    '& .MuiRating-iconFilled': {
+        color: '#def186',
+    },
+    '& .MuiSvgIcon-root': {
+        width: 100,
+        height: 100,
+    },
+    '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
+        color: '#e0e0e0',
+    },
+});
 
 export default function Dashboard() {
-    // TODO tiles: - stocks went up/down?
     // TODO: make sidebar collapsible?
 
     const { currentUser } = useAuth();
-    const [autoTrading, setAutoTrading] = React.useState(false);
+    const [autoTrading, setAutoTrading] = useState(false);
+    const [tipAverage, setTipAverage] = useState<number>(0);
+    const [tipTotal, setTipTotal] = useState<number>(0);
+    const { feedback, tips } = useContext(AnalyticsContext);
 
     function toggleAutoTrading() {
-        // TODO: Make backend call
         setAutoTrading(!autoTrading);
     }
+
+    useEffect(() => {
+        let total = 0;
+        let length = 0;
+
+        for (const data of tips) {
+            total += data.amount;
+            length += 1;
+        }
+
+        if (length === 0) {
+            return;
+        }
+
+        setTipTotal(total);
+        setTipAverage(total / length);
+    }, [tips]);
 
     return (
         <TileGrid rows={6} cols={10}>
@@ -39,7 +73,7 @@ export default function Dashboard() {
                     Welcome, {currentUser.displayName ? currentUser.displayName : currentUser.email}
                     !
                 </span>
-                <span className="text-lg">Balance: 168,8€</span>
+                <span className="text-lg">Balance: {tipTotal}€</span>
             </Tile>
 
             <Tile
@@ -114,7 +148,7 @@ export default function Dashboard() {
                     <span className="text-lg font-bold tracking-wide">Portfolio</span>
                 </div>
 
-                <div className="flex flex-row items-center justify-center h-full text-3xl font-light mt-2">
+                <div className="flex flex-row items-center justify-center h-full text-3xl mt-2">
                     <span className="mr-1">15%</span>
                     <ArrowUpRightIcon size={28} className="text-action" weight="bold" />
                 </div>
@@ -123,9 +157,19 @@ export default function Dashboard() {
             <Tile outerClassName="col-span-5 row-span-2">
                 <ChatSuggestion />
             </Tile>
-
-            <Tile outerClassName="col-span-5 row-span-2">
-                <div />
+            <Tile
+                outerClassName="col-span-5 row-span-2"
+                innerClassName="flex flex-col justify-between items-center text-lg p-6"
+                redirectPage="Analytics"
+            >
+                <div className="flex flex-row items-center gap-2 text-center">
+                    <StarIcon size={iconSize} weight="bold" className="text-primary" />
+                    <span className="text-lg font-bold tracking-wide">Average Rating</span>
+                </div>
+                <div className="text-lg h-full w-full items-center justify-center flex flex-col gap-4">
+                    <span className="text-3xl">{tipAverage}</span>
+                    <StyledRating value={tipAverage} precision={0.05} readOnly />
+                </div>
             </Tile>
 
             <Tile outerClassName="col-span-full">

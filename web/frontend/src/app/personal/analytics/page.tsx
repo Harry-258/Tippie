@@ -1,32 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Feedback, Tip } from '@/app/util/types';
-import { getAllFeedback, getAllTips } from '@/app/util/apiCalls';
-import { auth } from '@/firebase/firebaseClient';
+import { useContext } from 'react';
 import TileGrid from '@/app/components/TileGrid';
 import Tile from '@/app/components/Tile';
+import { AnalyticsContext } from '@/app/util/util';
 
 export default function Analytics() {
-    const [tips, setTips] = useState<Tip[]>([]);
-    const [feedback, setFeedback] = useState<Feedback[]>([]);
-
-    useEffect(() => {
-        async function setup() {
-            const user = auth.currentUser;
-            if (!user) {
-                console.error('User is not authenticated');
-                return;
-            }
-
-            const token = await user.getIdToken();
-
-            setTips(await getAllTips(token));
-            setFeedback(await getAllFeedback(token));
-        }
-
-        setup();
-    }, []);
+    const { feedback, tips } = useContext(AnalyticsContext);
 
     return (
         <TileGrid rows={3} cols={1}>
