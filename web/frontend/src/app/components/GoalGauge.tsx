@@ -1,9 +1,16 @@
 import { Gauge, gaugeClasses } from '@mui/x-charts';
+import { useContext } from 'react';
+import { AnalyticsContext } from '@/app/util/util';
 
 export default function GoalGauge() {
+    const { tips } = useContext(AnalyticsContext);
+
     return (
         <Gauge
-            value={84.4}
+            value={tips.reduce(
+                (previousValue, currentValue) => previousValue + currentValue.amount,
+                0
+            )}
             margin={{ left: 0, right: 0, top: 4, bottom: 0 }}
             sx={() => ({
                 [`& .${gaugeClasses.valueText}`]: {

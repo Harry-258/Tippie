@@ -9,3 +9,5 @@ export const AnalyticsContext = createContext<Analytics>({
     feedback: [],
     tips: [],
 });
+
+export const baseUrl = 'http://localhost:4000';

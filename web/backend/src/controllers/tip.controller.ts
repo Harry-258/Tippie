@@ -14,7 +14,7 @@ export async function tipUser(req: Request, res: Response) {
 
         await addTip(uid, amount);
 
-        res.status(200).send("OK");
+        return res.status(200).send("OK");
     } catch (error) {
         console.error("Error tipping user: " + error);
         return res.status(500).send("Internal server error: " + error);

@@ -5,6 +5,7 @@ import {
     Message,
     MessageSender,
 } from '@/app/util/types';
+import { baseUrl } from '@/app/util/util';
 
 export class ConversationStore {
     private static instance: ConversationStore;
@@ -37,7 +38,7 @@ export class ConversationStore {
      */
     public async fetchUserConversations(authToken: string): Promise<ConversationTitle[]> {
         try {
-            const response = await fetch('http://localhost:4000/api/chat', {
+            const response = await fetch(baseUrl + '/api/chat', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,16 +70,13 @@ export class ConversationStore {
                 return this.currentConversation;
             }
 
-            const response = await fetch(
-                `http://localhost:4000/api/chat/conversation/${conversationId}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${authToken}`,
-                    },
-                }
-            );
+            const response = await fetch(baseUrl + `/api/chat/conversation/${conversationId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${authToken}`,
+                },
+            });
             const data = await response.json();
 
             const messages: Message[] = [];
@@ -208,7 +206,7 @@ export class ConversationStore {
                 requestBody.conversationId = conversationId;
             }
 
-            const response = await fetch('http://localhost:4000/api/chat', {
+            const response = await fetch(baseUrl + '/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

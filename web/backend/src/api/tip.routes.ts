@@ -9,9 +9,9 @@ import {
 
 const tipRouter = express.Router();
 
-tipRouter.post("/", checkAuth, tipUser);
+tipRouter.post("/", tipUser);
 tipRouter.get("/", checkAuth, getAllUserTips);
-tipRouter.post("/feedback", checkAuth, leaveFeedback);
+tipRouter.post("/feedback", leaveFeedback);
 tipRouter.get("/feedback", checkAuth, getAllFeedbackAndRatings);
 
 export default tipRouter;

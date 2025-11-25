@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import TileGrid from '@/app/components/TileGrid';
 import Tile from '@/app/components/Tile';
 import Stack from '@mui/material/Stack';
@@ -12,6 +13,7 @@ import {
     ArrowUpRightIcon,
     ChartLineUpIcon,
     StarIcon,
+    ThumbsUpIcon,
 } from '@phosphor-icons/react';
 import React, { useContext, useEffect, useState } from 'react';
 import ChatSuggestion from '@/app/components/ChatSuggestion';
@@ -19,8 +21,9 @@ import { AnalyticsContext, iconSize } from '@/app/util/util';
 import { useAuth } from '@/contexts/authContext';
 import styled from '@emotion/styled';
 import Rating from '@mui/material/Rating';
+import { Feedback } from '@/app/util/types';
 
-const StyledRating = styled(Rating)({
+const StyledAverageRating = styled(Rating)({
     '& .MuiRating-iconFilled': {
         color: '#def186',
     },
@@ -33,13 +36,22 @@ const StyledRating = styled(Rating)({
     },
 });
 
+const StyledRating = styled(Rating)({
+    '& .MuiRating-iconFilled': {
+        color: '#def186',
+    },
+    '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
+        color: '#e0e0e0',
+    },
+});
+
 export default function Dashboard() {
     // TODO: make sidebar collapsible?
 
     const { currentUser } = useAuth();
     const [autoTrading, setAutoTrading] = useState(false);
-    const [tipAverage, setTipAverage] = useState<number>(0);
-    const [tipTotal, setTipTotal] = useState<number>(0);
+    const [ratingAverage, setRatingAverage] = useState<number>(0);
+    const [displayedFeedback, setDisplayedFeedback] = useState<Feedback[]>([]);
     const { feedback, tips } = useContext(AnalyticsContext);
 
     function toggleAutoTrading() {
@@ -47,21 +59,27 @@ export default function Dashboard() {
     }
 
     useEffect(() => {
-        let total = 0;
-        let length = 0;
+        setDisplayedFeedback(
+            feedback.filter(review => review.rating && review.feedback).slice(0, 4)
+        );
 
-        for (const data of tips) {
-            total += data.amount;
-            length += 1;
+        let ratingsTotal = 0;
+        let ratingsNumber = 0;
+
+        for (const data of feedback) {
+            if (data.rating) {
+                ratingsTotal += data.rating;
+                ratingsNumber += 1;
+            }
         }
 
-        if (length === 0) {
+        if (ratingsNumber === 0) {
             return;
         }
 
-        setTipTotal(total);
-        setTipAverage(total / length);
-    }, [tips]);
+        const result = (ratingsTotal / ratingsNumber).toFixed(2);
+        setRatingAverage(Number(result));
+    }, [feedback]);
 
     return (
         <TileGrid rows={6} cols={10}>
@@ -73,7 +91,14 @@ export default function Dashboard() {
                     Welcome, {currentUser.displayName ? currentUser.displayName : currentUser.email}
                     !
                 </span>
-                <span className="text-lg">Balance: {tipTotal}€</span>
+                <span className="text-lg">
+                    Balance:{' '}
+                    {tips.reduce(
+                        (previousValue, currentValue) => previousValue + currentValue.amount,
+                        0
+                    )}
+                    €
+                </span>
             </Tile>
 
             <Tile
@@ -167,13 +192,35 @@ export default function Dashboard() {
                     <span className="text-lg font-bold tracking-wide">Average Rating</span>
                 </div>
                 <div className="text-lg h-full w-full items-center justify-center flex flex-col gap-4">
-                    <span className="text-3xl">{tipAverage}</span>
-                    <StyledRating value={tipAverage} precision={0.05} readOnly />
+                    <span className="text-3xl">{ratingAverage}</span>
+                    <StyledAverageRating value={ratingAverage} precision={0.05} readOnly />
                 </div>
             </Tile>
 
-            <Tile outerClassName="col-span-full">
-                <div />
+            <Tile outerClassName="col-span-full" innerClassName="flex flex-row gap-6">
+                {feedback.length === 0 && <span className="text-2xl m-4">No reviews yet...</span>}
+                {feedback.length !== 0 && (
+                    <div className="flex flex-col text-lg items-center justify-center">
+                        <div className="flex flex-row gap-2 items-center font-bold">
+                            <ThumbsUpIcon size={iconSize} weight="bold" className="text-primary" />
+                            <span>Most recent reviews:</span>
+                        </div>
+                        <span className="mt-2">Very positive</span>
+                    </div>
+                )}
+                {displayedFeedback.map((item, index) => (
+                    <Link
+                        className="hover:shadow-md transition-all duration-300
+                            hover:scale-[1.01] rounded-xl bg-white p-4
+                            shadow-sm border border-action/60 flex flex-col justify-between
+                            items-start w-1/5 font-semibold"
+                        key={index}
+                        href="/personal/analytics"
+                    >
+                        <span className="line-clamp-2">{item.feedback}</span>
+                        <StyledRating value={item.rating} precision={1} readOnly />
+                    </Link>
+                ))}
             </Tile>
         </TileGrid>
     );

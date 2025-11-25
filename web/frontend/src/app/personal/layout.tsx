@@ -111,7 +111,7 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
                                     : currentUser.email}
                             </Link>
                             <span className="rounded-3xl bg-action text-primary px-2 font-medium text-sm">
-                                Waitress
+                                Waiter
                             </span>
                         </div>
                     </div>

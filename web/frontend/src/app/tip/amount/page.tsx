@@ -4,14 +4,22 @@ import ProgressBar from '@/app/components/ProgressBar';
 import { Progress } from '@/app/util/types';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 export default function Amount() {
     const [tipAmount, setTips] = useState(2);
     const tipValues = [2, 5, 10];
+    const params = useSearchParams();
+    const userId = params.get('uid');
 
-    // TODO: - Confirm with 2f precision
-    //       - Dividers between sections?
+    if (!userId) {
+        return (
+            <div className="h-full flex items-center justify-center w-full">
+                Oops! Looks like we could not find the user you were looking for.
+            </div>
+        );
+    }
 
     return (
         <div className="h-full flex flex-col items-center">
@@ -53,7 +61,12 @@ export default function Amount() {
                         className="text-foreground w-full bg-primary p-3 rounded-xl"
                     />
                 </div>
-                <Link href={'/tip/payment'}>
+                <Link
+                    href={{
+                        pathname: '/tip/payment',
+                        query: { userId: userId, amount: tipAmount },
+                    }}
+                >
                     <div className="button">Confirm {tipAmount}€</div>
                 </Link>
             </div>

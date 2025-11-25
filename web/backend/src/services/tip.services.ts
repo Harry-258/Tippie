@@ -97,7 +97,7 @@ export const addFeedback = async (uid: string, feedback?: string, rating?: numbe
         if (feedback) {
             feedbackItem.feedback = feedback;
         }
-        if (rating) {
+        if (rating && rating !== 0) {
             feedbackItem.rating = rating;
         }
 
