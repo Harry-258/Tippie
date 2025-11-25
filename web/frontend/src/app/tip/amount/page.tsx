@@ -4,7 +4,7 @@ import ProgressBar from '@/app/components/ProgressBar';
 import { Progress } from '@/app/util/types';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 export default function Amount() {
@@ -64,7 +64,7 @@ export default function Amount() {
                 <Link
                     href={{
                         pathname: '/tip/payment',
-                        query: { userId: userId, amount: tipAmount },
+                        query: { uid: userId, amount: tipAmount },
                     }}
                 >
                     <div className="button">Confirm {tipAmount}€</div>

@@ -59,9 +59,7 @@ export default function Dashboard() {
     }
 
     useEffect(() => {
-        setDisplayedFeedback(
-            feedback.filter(review => review.rating && review.feedback).slice(0, 4)
-        );
+        setDisplayedFeedback(feedback.filter(review => review.rating && review.feedback));
 
         let ratingsTotal = 0;
         let ratingsNumber = 0;
@@ -197,10 +195,13 @@ export default function Dashboard() {
                 </div>
             </Tile>
 
-            <Tile outerClassName="col-span-full" innerClassName="flex flex-row gap-6">
+            <Tile
+                outerClassName="col-span-full"
+                innerClassName="flex flex-row gap-6 overflow-x-auto"
+            >
                 {feedback.length === 0 && <span className="text-2xl m-4">No reviews yet...</span>}
                 {feedback.length !== 0 && (
-                    <div className="flex flex-col text-lg items-center justify-center">
+                    <div className="flex flex-col text-lg items-center justify-center min-w-1/5">
                         <div className="flex flex-row gap-2 items-center font-bold">
                             <ThumbsUpIcon size={iconSize} weight="bold" className="text-primary" />
                             <span>Most recent reviews:</span>
@@ -213,12 +214,12 @@ export default function Dashboard() {
                         className="hover:shadow-md transition-all duration-300
                             hover:scale-[1.01] rounded-xl bg-white p-4
                             shadow-sm border border-action/60 flex flex-col justify-between
-                            items-start w-1/5 font-semibold"
+                            items-start flex-none font-semibold max-w-1/5 min-w-1/5"
                         key={index}
                         href="/personal/analytics"
                     >
                         <span className="line-clamp-2">{item.feedback}</span>
-                        <StyledRating value={item.rating} precision={1} readOnly />
+                        <StyledRating value={item.rating} precision={0.5} readOnly />
                     </Link>
                 ))}
             </Tile>

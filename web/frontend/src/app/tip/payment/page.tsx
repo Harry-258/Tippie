@@ -9,12 +9,11 @@ import { baseUrl } from '@/app/util/util';
 
 export default function Payment() {
     const params = useSearchParams();
-    const userId = params.get('userId');
+    const userId = params.get('uid');
     const amount = params.get('amount');
     const router = useRouter();
 
     if (!userId || !amount) {
-        console.log('uid ' + userId + ' amount ' + amount);
         return (
             <div className="h-full flex items-center justify-center w-full">
                 Something went wrong. Please try again.

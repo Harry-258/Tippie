@@ -102,14 +102,16 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
                             />
                         </Link>
                         <div className="flex flex-col gap-1 items-start">
-                            <Link
-                                href="/personal/profile"
-                                className="text-lg text-primary font-medium link"
-                            >
-                                {currentUser.displayName
-                                    ? currentUser.displayName
-                                    : currentUser.email}
-                            </Link>
+                            {currentUser && (
+                                <Link
+                                    href="/personal/profile"
+                                    className="text-lg text-primary font-medium link"
+                                >
+                                    {currentUser.displayName
+                                        ? currentUser.displayName
+                                        : currentUser.email}
+                                </Link>
+                            )}
                             <span className="rounded-3xl bg-action text-primary px-2 font-medium text-sm">
                                 Waiter
                             </span>
