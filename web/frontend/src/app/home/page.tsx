@@ -26,7 +26,7 @@ export default function Home() {
             <div className="w-full flex p-10 justify-evenly my-10 gap-10 items-center">
                 <div className="flex flex-col gap-4">
                     <Image src={'/logo_white.png'} alt={'Tippie logo'} height={500} width={500} />
-                    <Link className="button text-center text-xl" href="/home/coming_soon">
+                    <Link className="button text-center text-xl" href="/personal">
                         Try it now
                     </Link>
                 </div>
@@ -139,9 +139,7 @@ export default function Home() {
                     </button>
                 </form>
                 <div className="text-lg font-semibold flex flex-col w-1/2 gap-4">
-                    <span className="text-3xl font-bold mb-4">
-                        Let’s build something great together
-                    </span>
+                    <span className="text-3xl font-bold mb-4">Contact us</span>
                     <p>Have a question, partnership idea, or just want to say hi?</p>
                     <p className="mb-4">
                         We’d love to hear from you. Whether you’re a creator looking to join Tippie,

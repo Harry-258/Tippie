@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import TileGrid from '@/app/components/TileGrid';
 import Tile from '@/app/components/Tile';
 import Stack from '@mui/material/Stack';
@@ -11,21 +12,72 @@ import {
     BriefcaseIcon,
     ArrowUpRightIcon,
     ChartLineUpIcon,
+    StarIcon,
+    ThumbsUpIcon,
 } from '@phosphor-icons/react';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ChatSuggestion from '@/app/components/ChatSuggestion';
-import { iconSize } from '@/app/util/util';
+import { AnalyticsContext, iconSize } from '@/app/util/util';
+import { useAuth } from '@/contexts/authContext';
+import styled from '@emotion/styled';
+import Rating from '@mui/material/Rating';
+import { Feedback } from '@/app/util/types';
+
+const StyledAverageRating = styled(Rating)({
+    '& .MuiRating-iconFilled': {
+        color: '#def186',
+    },
+    '& .MuiSvgIcon-root': {
+        width: 100,
+        height: 100,
+    },
+    '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
+        color: '#e0e0e0',
+    },
+});
+
+const StyledRating = styled(Rating)({
+    '& .MuiRating-iconFilled': {
+        color: '#def186',
+    },
+    '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
+        color: '#e0e0e0',
+    },
+});
 
 export default function Dashboard() {
-    // TODO tiles: - stocks went up/down?
     // TODO: make sidebar collapsible?
 
-    const [autoTrading, setAutoTrading] = React.useState(false);
+    const { currentUser } = useAuth();
+    const [autoTrading, setAutoTrading] = useState(false);
+    const [ratingAverage, setRatingAverage] = useState<number>(0);
+    const [displayedFeedback, setDisplayedFeedback] = useState<Feedback[]>([]);
+    const { feedback, tips } = useContext(AnalyticsContext);
 
     function toggleAutoTrading() {
-        // TODO: Make backend call
         setAutoTrading(!autoTrading);
     }
+
+    useEffect(() => {
+        setDisplayedFeedback(feedback.filter(review => review.rating && review.feedback));
+
+        let ratingsTotal = 0;
+        let ratingsNumber = 0;
+
+        for (const data of feedback) {
+            if (data.rating) {
+                ratingsTotal += data.rating;
+                ratingsNumber += 1;
+            }
+        }
+
+        if (ratingsNumber === 0) {
+            return;
+        }
+
+        const result = (ratingsTotal / ratingsNumber).toFixed(2);
+        setRatingAverage(Number(result));
+    }, [feedback]);
 
     return (
         <TileGrid rows={6} cols={10}>
@@ -33,8 +85,18 @@ export default function Dashboard() {
                 innerClassName="flex flex-col gap-4 justify-center ml-2"
                 outerClassName="col-span-full"
             >
-                <span className="text-2xl font-bold">Welcome, Jane!</span>
-                <span className="text-lg">Balance: 168,8€</span>
+                <span className="text-2xl font-bold">
+                    Welcome, {currentUser.displayName ? currentUser.displayName : currentUser.email}
+                    !
+                </span>
+                <span className="text-lg">
+                    Balance:{' '}
+                    {tips.reduce(
+                        (previousValue, currentValue) => previousValue + currentValue.amount,
+                        0
+                    )}
+                    €
+                </span>
             </Tile>
 
             <Tile
@@ -109,7 +171,7 @@ export default function Dashboard() {
                     <span className="text-lg font-bold tracking-wide">Portfolio</span>
                 </div>
 
-                <div className="flex flex-row items-center justify-center h-full text-3xl font-light mt-2">
+                <div className="flex flex-row items-center justify-center h-full text-3xl mt-2">
                     <span className="mr-1">15%</span>
                     <ArrowUpRightIcon size={28} className="text-action" weight="bold" />
                 </div>
@@ -118,13 +180,48 @@ export default function Dashboard() {
             <Tile outerClassName="col-span-5 row-span-2">
                 <ChatSuggestion />
             </Tile>
-
-            <Tile outerClassName="col-span-5 row-span-2">
-                <div />
+            <Tile
+                outerClassName="col-span-5 row-span-2"
+                innerClassName="flex flex-col justify-between items-center text-lg p-6"
+                redirectPage="Analytics"
+            >
+                <div className="flex flex-row items-center gap-2 text-center">
+                    <StarIcon size={iconSize} weight="bold" className="text-primary" />
+                    <span className="text-lg font-bold tracking-wide">Average Rating</span>
+                </div>
+                <div className="text-lg h-full w-full items-center justify-center flex flex-col gap-4">
+                    <span className="text-3xl">{ratingAverage}</span>
+                    <StyledAverageRating value={ratingAverage} precision={0.05} readOnly />
+                </div>
             </Tile>
 
-            <Tile outerClassName="col-span-full">
-                <div />
+            <Tile
+                outerClassName="col-span-full"
+                innerClassName="flex flex-row gap-6 overflow-x-auto"
+            >
+                {feedback.length === 0 && <span className="text-2xl m-4">No reviews yet...</span>}
+                {feedback.length !== 0 && (
+                    <div className="flex flex-col text-lg items-center justify-center min-w-1/5">
+                        <div className="flex flex-row gap-2 items-center font-bold">
+                            <ThumbsUpIcon size={iconSize} weight="bold" className="text-primary" />
+                            <span>Most recent reviews:</span>
+                        </div>
+                        <span className="mt-2">Very positive</span>
+                    </div>
+                )}
+                {displayedFeedback.map((item, index) => (
+                    <Link
+                        className="hover:shadow-md transition-all duration-300
+                            hover:scale-[1.01] rounded-xl bg-white p-4
+                            shadow-sm border border-action/60 flex flex-col justify-between
+                            items-start flex-none font-semibold max-w-1/5 min-w-1/5"
+                        key={index}
+                        href="/personal/analytics"
+                    >
+                        <span className="line-clamp-2">{item.feedback}</span>
+                        <StyledRating value={item.rating} precision={0.5} readOnly />
+                    </Link>
+                ))}
             </Tile>
         </TileGrid>
     );

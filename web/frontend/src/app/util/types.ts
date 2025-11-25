@@ -69,5 +69,32 @@ export enum MessageSender {
 
 export type Conversation = {
     messages: Message[];
+    id: string;
+};
+
+export type ConversationTitle = {
     title: string;
+    id: string;
+};
+
+export type ConversationMessage = {
+    conversationId: string;
+    message: string;
+    timestamp: number;
+};
+
+export type Tip = {
+    amount: number;
+    timestamp: number;
+};
+
+export type Feedback = {
+    feedback?: string;
+    rating?: number;
+    timestamp: number;
+};
+
+export type Analytics = {
+    feedback: Feedback[];
+    tips: Tip[];
 };

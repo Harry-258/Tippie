@@ -3,65 +3,126 @@
 import TileGrid from '@/app/components/TileGrid';
 import Tile from '@/app/components/Tile';
 import React, { useEffect, useRef, useState } from 'react';
-import { Conversation, MessageSender } from '@/app/util/types';
+import { Conversation, ConversationTitle, MessageSender } from '@/app/util/types';
 import { ArrowCircleUpIcon, PlusCircleIcon } from '@phosphor-icons/react';
 import { iconSize } from '@/app/util/util';
+import { auth } from '@/firebase/firebaseClient';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { TailSpin } from 'react-loader-spinner';
+import { ConversationStore } from '@/app/util/ConversationStore';
 
 export default function Advice() {
-    // TODO: Make conversation always show the latest message, even when it's scrollable
+    const [conversations, setConversations] = useState<ConversationTitle[]>([]);
+    const [currentConversation, setCurrentConversation] = useState<Conversation | null>();
+    const [currentInput, setCurrentInput] = useState<string>('');
+    const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
+    const [errorIsShowing, setErrorIsShowing] = useState<boolean>(false);
+
+    const inputRef = useRef<HTMLInputElement>(null);
+    const scrollableAreaRef = useRef<HTMLDivElement>(null);
+
+    const conversationStore = ConversationStore.getInstance();
 
     const conversationCardClass =
         'flex items-center hover:bg-gray-300 gap-1 py-2 p-1 px-6 hover:cursor-pointer mx-1 rounded-md';
-    const [currentConversation, setCurrentConversation] = useState<Conversation | null>();
-    const [currentInput, setCurrentInput] = useState<string>('');
-    const inputRef = useRef<HTMLInputElement>(null);
 
-    // TODO: replace this with backend call
-    const [conversations, setConversations] = useState<Conversation[]>([
-        {
-            title: 'Extreme funnies happening right now',
-            messages: [
-                {
-                    message: 'Bro waddup',
-                    timestamp: 0,
-                    sender: MessageSender.User,
-                },
-                {
-                    message: 'Not much wassup with u',
-                    timestamp: 1,
-                    sender: MessageSender.Agent,
-                },
-            ],
-        },
-    ]);
+    /**
+     * Scrolls the div element that contains all the messages from the current conversation to the bottom.
+     * Uses a timeout to make sure the current conversation is loaded and for the operation to look more natural.
+     */
+    function scrollToBottom() {
+        setTimeout(() => {
+            scrollableAreaRef.current?.scrollTo({
+                top: scrollableAreaRef.current.scrollHeight,
+                behavior: 'smooth',
+            });
+        }, 100);
+    }
 
-    function submitMessage(): void {
-        if (currentInput !== '') {
-            // TODO: Replace with backend call to add message
+    /**
+     * Handles the logic for submitting messages.
+     */
+    async function submitMessage() {
+        // Stop showing any error messages
+        setErrorIsShowing(false);
+        setIsWaitingForResponse(true);
 
-            const newMessage = {
-                message: currentInput,
-                timestamp: new Date().getTime(),
+        // Save the message and clear the input. Don't do anything if the input is empty.
+        const currentInputText = currentInput.trim();
+        if (currentInputText === '') {
+            return;
+        }
+        setCurrentInput('');
+
+        // Get the authorization token
+        const user = auth.currentUser;
+        if (!user) {
+            console.error('User is not authenticated');
+            return;
+        }
+
+        const token = await user.getIdToken();
+
+        // Set a timeout for the request, after which it will show the error message
+        const timeout: NodeJS.Timeout = setTimeout(() => {
+            setErrorIsShowing(true);
+            setIsWaitingForResponse(false);
+        }, 10000);
+
+        // Add the user message on the frontend. Only for the user to see while fetching the response.
+        if (!currentConversation) {
+            setCurrentConversation({
+                id: '',
+                messages: [
+                    {
+                        message: currentInputText,
+                        sender: MessageSender.User,
+                        timestamp: 0,
+                    },
+                ],
+            });
+        } else {
+            const currentMessages = currentConversation.messages;
+            const currentConversationId = currentConversation.id;
+            currentMessages.push({
+                message: currentInputText,
                 sender: MessageSender.User,
-            };
+                timestamp: currentMessages[currentMessages.length - 1].timestamp + 1,
+            });
 
-            if (currentConversation) {
-                setCurrentConversation({
-                    messages: currentConversation.messages.concat(newMessage),
-                    title: currentConversation.title,
-                });
-            } else {
-                const newConvo = {
-                    messages: [newMessage],
-                    title: 'Get title from backend',
-                };
-                setCurrentConversation(newConvo);
-                setConversations(conversations.concat(newConvo));
+            setCurrentConversation({
+                id: currentConversationId,
+                messages: currentMessages,
+            });
+        }
+
+        // Send the message using the conversation store.
+        await conversationStore.sendMessage(currentInputText, token);
+
+        clearTimeout(timeout);
+
+        setCurrentConversation(conversationStore.getCurrentConversation());
+        setConversations(conversationStore.getAllConversations());
+        setIsWaitingForResponse(false);
+
+        scrollToBottom();
+    }
+
+    useEffect(() => {
+        async function getUserConversations() {
+            const user = auth.currentUser;
+            if (!user) {
+                console.error('User is not authenticated');
+                return;
             }
 
-            setCurrentInput('');
+            const token = await user.getIdToken();
+            setConversations(await conversationStore.fetchUserConversations(token));
         }
-    }
+
+        getUserConversations();
+    }, []);
 
     useEffect(() => {
         window.addEventListener('keydown', keyboardShortcutHandler);
@@ -71,41 +132,61 @@ export default function Advice() {
     });
 
     /**
+     * Switches the current conversation to the one with the provided ID.
+     * @param conversationId The ID associated with the conversation to be switched to.
+     */
+    async function switchCurrentConversation(conversationId: string) {
+        setCurrentInput('');
+        setErrorIsShowing(false);
+        inputRef.current?.focus();
+
+        const user = auth.currentUser;
+        if (!user) {
+            console.error('User is not authenticated');
+            return;
+        }
+
+        const token = await user.getIdToken();
+
+        setCurrentConversation(await conversationStore.fetchConversation(conversationId, token));
+        scrollToBottom();
+    }
+
+    /**
      * Handles the shortcuts for the `/personal/advice` page.
      * @param event the event that comes from pressing a key or combination of keys
      */
-    function keyboardShortcutHandler(event: KeyboardEvent) {
+    async function keyboardShortcutHandler(event: KeyboardEvent) {
         if (event.key === 'Enter') {
-            submitMessage();
+            await submitMessage();
         }
     }
 
     return (
         <TileGrid rows={1} cols={1}>
             <Tile innerClassName="flex py-0 px-0">
-                <div className="h-full w-1/4 border-r-3 border-background flex flex-col overflow-auto">
-                    <span className="ml-6 mt-6 mb-4 text-primary/70 truncate text-lg">
-                        Conversations:
-                    </span>
+                <div className="w-2/5 border-r-3 border-background flex flex-col overflow-auto pb-10 my-4">
+                    <span className="ml-6 mt-2 mb-4 text-primary/70 text-lg">Conversations:</span>
                     <hr className="w-auto mx-4 text-background border-t-2 rounded-full" />
                     <div
                         className={conversationCardClass}
                         onClick={() => {
+                            conversationStore.startNewConversation();
                             setCurrentConversation(null);
+                            setCurrentInput('');
+                            setErrorIsShowing(false);
                             inputRef.current?.focus();
+                            setConversations(conversationStore.getAllConversations());
                         }}
                     >
                         <PlusCircleIcon className="text-primary" size={iconSize} />
                         <span className="truncate">New Conversation</span>
                     </div>
-                    {conversations.map((conversation: Conversation, index: number) => (
+                    {conversations.map((conversation: ConversationTitle, index: number) => (
                         <div
                             className={conversationCardClass}
                             key={index}
-                            onClick={() => {
-                                setCurrentConversation(conversation);
-                                inputRef.current?.focus();
-                            }}
+                            onClick={() => switchCurrentConversation(conversation.id)}
                         >
                             <span className="truncate">{conversation.title}</span>
                         </div>
@@ -113,7 +194,10 @@ export default function Advice() {
                 </div>
 
                 <div className="h-full w-full flex flex-col justify-between">
-                    <div className="flex flex-col gap-4 overflow-y-auto pb-10 mt-6">
+                    <div
+                        className="flex flex-col gap-4 overflow-y-auto pb-10 mt-6 mb-4"
+                        ref={scrollableAreaRef}
+                    >
                         {currentConversation &&
                             currentConversation.messages.map((message, index: number) => (
                                 <div
@@ -127,17 +211,38 @@ export default function Advice() {
                                                 : 'rounded-lg bg-background shadow-md w-fit'
                                         }`}
                                     >
-                                        <span>{message.message}</span>
+                                        <Markdown remarkPlugins={[remarkGfm]}>
+                                            {message.message}
+                                        </Markdown>
                                     </div>
                                 </div>
                             ))}
+                        {isWaitingForResponse && (
+                            <div className="flex flex-row gap-2 mx-10 items-center text-gray-400">
+                                <TailSpin
+                                    visible={true}
+                                    height="20"
+                                    width="20"
+                                    color="#9CA3AF"
+                                    radius="4"
+                                    ariaLabel="oval-loading"
+                                />
+                                <span>Waiting for response...</span>
+                            </div>
+                        )}
+                        {errorIsShowing && (
+                            <div className="flex flex-row gap-2 mx-10 items-center text-red-500">
+                                <span>Error: Something went wrong. Please try again.</span>
+                            </div>
+                        )}
                     </div>
 
                     <div
                         className={`w-auto mx-6 mb-6 rounded-lg shadow-md bg-background text-primary flex justify-between`}
                     >
                         <input
-                            placeholder="Ask Anything"
+                            disabled={isWaitingForResponse}
+                            placeholder="Ask anything"
                             ref={inputRef}
                             className={'w-full h-full p-4 rounded-lg focus:outline-none'}
                             value={currentInput}

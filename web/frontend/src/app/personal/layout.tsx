@@ -1,10 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-
 import Image from 'next/image';
-import { ActionIcon } from '@/app/util/types';
-import React from 'react';
+import { ActionIcon, Feedback, Tip } from '@/app/util/types';
+import React, { useEffect, useState } from 'react';
 import { redirect, usePathname } from 'next/navigation';
 import {
     SignOutIcon,
@@ -14,15 +13,36 @@ import {
     ChatCircleDotsIcon,
     GearIcon,
 } from '@phosphor-icons/react';
-import { iconSize } from '@/app/util/util';
+import { AnalyticsContext, iconSize } from '@/app/util/util';
 import { useAuth } from '@/contexts/authContext';
+import { getAllFeedback, getAllTips } from '@/app/util/apiCalls';
+import { auth } from '@/firebase/firebaseClient';
 
 export default function PersonalLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-    const { loggedIn } = useAuth();
+    const { loggedIn, currentUser } = useAuth();
+    const [feedback, setFeedback] = useState<Feedback[]>([]);
+    const [tips, setTips] = useState<Tip[]>([]);
 
-    if (!loggedIn) {
-        redirect('/auth/login');
-    }
+    useEffect(() => {
+        async function setup() {
+            const user = auth.currentUser;
+            if (!user) {
+                console.error('User is not authenticated');
+                return;
+            }
+
+            const token = await user.getIdToken();
+
+            setTips(await getAllTips(token));
+            setFeedback(await getAllFeedback(token));
+        }
+
+        if (!loggedIn) {
+            redirect('/auth/login');
+        } else {
+            setup();
+        }
+    }, []);
 
     const path = usePathname();
     const sidebarElementClass =
@@ -82,14 +102,18 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
                             />
                         </Link>
                         <div className="flex flex-col gap-1 items-start">
-                            <Link
-                                href="/personal/profile"
-                                className="text-lg text-primary font-medium link"
-                            >
-                                Jane Smith
-                            </Link>
+                            {currentUser && (
+                                <Link
+                                    href="/personal/profile"
+                                    className="text-lg text-primary font-medium link"
+                                >
+                                    {currentUser.displayName
+                                        ? currentUser.displayName
+                                        : currentUser.email}
+                                </Link>
+                            )}
                             <span className="rounded-3xl bg-action text-primary px-2 font-medium text-sm">
-                                Waitress
+                                Waiter
                             </span>
                         </div>
                     </div>
@@ -105,7 +129,14 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
                     ))}
                 </div>
             </div>
-            <div className="w-full h-full ml-5">{children}</div>
+            <AnalyticsContext
+                value={{
+                    feedback: feedback,
+                    tips: tips,
+                }}
+            >
+                <div className="w-full h-full ml-5">{children}</div>
+            </AnalyticsContext>
         </div>
     );
 }
