@@ -11,4 +11,4 @@ export const AnalyticsContext = createContext<Analytics>({
 });
 
 // export const baseUrl = 'http://localhost:4000';
-export const baseUrl = 'http://13.51.75.18:4000';
+export const baseUrl = 'https://tippie.pro';

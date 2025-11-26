@@ -52,4 +52,8 @@ coverage/
 # Misc
 *.tgz
 
+# Build artifacts:
+*.js.map
+*.d.ts
+
 tippie-ee963-firebase-adminsdk-fbsvc-16f8661098.json
