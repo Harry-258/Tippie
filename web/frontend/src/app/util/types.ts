@@ -13,7 +13,7 @@ export type Action =
     | 'Settings'
     | 'Log Out'
     | 'Profile'
-    | 'Advice';
+    | 'Learn';
 
 export type TileProps = {
     children: React.ReactNode;

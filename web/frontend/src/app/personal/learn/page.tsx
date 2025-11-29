@@ -12,12 +12,13 @@ import remarkGfm from 'remark-gfm';
 import { TailSpin } from 'react-loader-spinner';
 import { ConversationStore } from '@/app/util/ConversationStore';
 
-export default function Advice() {
+export default function Learn() {
     const [conversations, setConversations] = useState<ConversationTitle[]>([]);
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>();
     const [currentInput, setCurrentInput] = useState<string>('');
     const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
     const [errorIsShowing, setErrorIsShowing] = useState<boolean>(false);
+    const [showingSuggestions, setShowingSuggestions] = useState<boolean>(true);
 
     const inputRef = useRef<HTMLInputElement>(null);
     const scrollableAreaRef = useRef<HTMLDivElement>(null);
@@ -42,16 +43,21 @@ export default function Advice() {
 
     /**
      * Handles the logic for submitting messages.
+     * @param input If a string should be used instead of the currentInput.
      */
-    async function submitMessage() {
+    async function submitMessage(input?: string) {
+        setShowingSuggestions(false);
+
         // Stop showing any error messages
         setErrorIsShowing(false);
         setIsWaitingForResponse(true);
 
         // Save the message and clear the input. Don't do anything if the input is empty.
-        const currentInputText = currentInput.trim();
-        if (currentInputText === '') {
+        let currentInputText = currentInput.trim();
+        if (!input && currentInputText === '') {
             return;
+        } else if (input) {
+            currentInputText = input;
         }
         setCurrentInput('');
 
@@ -70,7 +76,7 @@ export default function Advice() {
             setIsWaitingForResponse(false);
         }, 10000);
 
-        // Add the user message on the frontend. Only for the user to see while fetching the response.
+        // Optimistiaclly add the user message on the frontend. Only for the user to see while fetching the response.
         if (!currentConversation) {
             setCurrentConversation({
                 id: '',
@@ -172,6 +178,7 @@ export default function Advice() {
                         className={conversationCardClass}
                         onClick={() => {
                             conversationStore.startNewConversation();
+                            setShowingSuggestions(true);
                             setCurrentConversation(null);
                             setCurrentInput('');
                             setErrorIsShowing(false);
@@ -195,9 +202,41 @@ export default function Advice() {
 
                 <div className="h-full w-full flex flex-col justify-between">
                     <div
-                        className="flex flex-col gap-4 overflow-y-auto pb-10 mt-6 mb-4"
+                        className={`flex flex-col gap-4 overflow-y-auto ${!currentConversation ? 'items-center h-full justify-center' : 'pb-10 mt-6 mb-4'}`}
                         ref={scrollableAreaRef}
                     >
+                        {!currentConversation && showingSuggestions && (
+                            <div className="flex justify-self-center items-center flex-col gap-4">
+                                <span className="text-2xl text-primary/70">Suggestions:</span>
+                                <div className="flex flex-row gap-4 justify-center">
+                                    <button
+                                        className="p-4 border-action border-1 shadow-sm rounded-xl text-wrap
+                                            w-1/3 text-left hover:scale-[1.01] transition duration-200
+                                            hover:cursor-pointer hover:shadow-md"
+                                        onClick={() => {
+                                            submitMessage(
+                                                'How do taxes work when investing in stocks in the Netherlands?'
+                                            );
+                                        }}
+                                    >
+                                        How do taxes work when investing in stocks in the
+                                        Netherlands?
+                                    </button>
+                                    <button
+                                        className="p-4 border-action border-1 shadow-sm rounded-xl text-wrap
+                                            w-1/3 text-left hover:scale-[1.01] transition duration-200
+                                            hover:cursor-pointer hover:shadow-md"
+                                        onClick={() => {
+                                            submitMessage(
+                                                'What are the risks of investing in the stock market?'
+                                            );
+                                        }}
+                                    >
+                                        What are the risks of investing in the stock market?
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                         {currentConversation &&
                             currentConversation.messages.map((message, index: number) => (
                                 <div
@@ -248,7 +287,7 @@ export default function Advice() {
                             value={currentInput}
                             onChange={event => setCurrentInput(event.target.value)}
                         />
-                        <div className="m-4 hover:cursor-pointer" onClick={submitMessage}>
+                        <div className="m-4 hover:cursor-pointer" onClick={() => submitMessage()}>
                             <ArrowCircleUpIcon
                                 size={30}
                                 className="text-gray-400 hover:text-gray-500"

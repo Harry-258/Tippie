@@ -9,9 +9,9 @@ import {
     SignOutIcon,
     HouseIcon,
     ChartLineIcon,
-    CurrencyDollarIcon,
-    ChatCircleDotsIcon,
     GearIcon,
+    BookOpenIcon,
+    UserIcon,
 } from '@phosphor-icons/react';
 import { AnalyticsContext, iconSize } from '@/app/util/util';
 import { useAuth } from '@/contexts/authContext';
@@ -51,8 +51,9 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
     const sidebarTopOptions: ActionIcon[] = [
         { name: 'Dashboard', icon: HouseIcon },
         { name: 'Analytics', icon: ChartLineIcon },
-        { name: 'Trading', icon: CurrencyDollarIcon },
-        { name: 'Advice', icon: ChatCircleDotsIcon },
+        // { name: 'Trading', icon: CurrencyDollarIcon },
+        { name: 'Learn', icon: BookOpenIcon },
+        { name: 'Profile', icon: UserIcon },
         { name: 'Settings', icon: GearIcon },
     ];
 
