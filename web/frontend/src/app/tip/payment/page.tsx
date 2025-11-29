@@ -5,7 +5,6 @@ import ProgressBar from '@/app/components/ProgressBar';
 import Image from 'next/image';
 import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { baseUrl } from '@/app/util/util';
 
 export default function Payment() {
     const params = useSearchParams();
@@ -23,7 +22,7 @@ export default function Payment() {
 
     async function makePayment() {
         try {
-            await fetch(baseUrl + '/api/tip', {
+            await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/tip', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

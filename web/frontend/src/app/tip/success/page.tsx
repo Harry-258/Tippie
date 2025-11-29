@@ -3,7 +3,6 @@
 import React from 'react';
 import ProgressBar from '@/app/components/ProgressBar';
 import { Progress } from '@/app/util/types';
-import { baseUrl } from '@/app/util/util';
 import { useSearchParams } from 'next/navigation';
 import Rating from '@mui/material/Rating';
 import styled from '@emotion/styled';
@@ -45,15 +44,7 @@ export default function Page() {
                 setSubmitted(true);
                 setInvalidFeedback(false);
 
-                console.log(
-                    JSON.stringify({
-                        feedback: feedback,
-                        rating: rating,
-                        uid: uid,
-                    })
-                );
-
-                await fetch(baseUrl + '/api/tip/feedback', {
+                await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/tip/feedback', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

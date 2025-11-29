@@ -1,5 +1,4 @@
 import { Feedback, Tip } from '@/app/util/types';
-import { baseUrl } from '@/app/util/util';
 
 /**
  * Fetches all the tips from the backend.
@@ -8,7 +7,7 @@ import { baseUrl } from '@/app/util/util';
  */
 export async function getAllTips(token: string): Promise<Tip[]> {
     try {
-        const result = await fetch(baseUrl + '/api/tip', {
+        const result = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/tip', {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -39,7 +38,7 @@ export async function getAllTips(token: string): Promise<Tip[]> {
  */
 export async function getAllFeedback(token: string): Promise<Feedback[]> {
     try {
-        const result = await fetch(baseUrl + '/api/tip/feedback', {
+        const result = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/tip/feedback', {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
