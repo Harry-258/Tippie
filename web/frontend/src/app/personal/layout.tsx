@@ -12,6 +12,7 @@ import {
     GearIcon,
     BookOpenIcon,
     UserIcon,
+    UsersFourIcon,
 } from '@phosphor-icons/react';
 import { AnalyticsContext, iconSize } from '@/app/util/util';
 import { useAuth } from '@/contexts/authContext';
@@ -53,6 +54,7 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
         { name: 'Analytics', icon: ChartLineIcon },
         // { name: 'Trading', icon: CurrencyDollarIcon },
         { name: 'Learn', icon: BookOpenIcon },
+        { name: 'Team', icon: UsersFourIcon },
         { name: 'Profile', icon: UserIcon },
         { name: 'Settings', icon: GearIcon },
     ];
@@ -60,8 +62,8 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
     const sidebarBottomOptions: ActionIcon[] = [{ name: 'Log Out', icon: SignOutIcon }];
 
     return (
-        <div className="flex flex-row p-10 h-screen">
-            <div className="bg-white rounded-3xl h-full p-6 flex flex-col justify-between shadow-md text-primary">
+        <div className="flex flex-row h-screen">
+            <div className="bg-white rounded-3xl h-auto p-6 flex flex-col justify-between shadow-md text-primary ml-10 my-10">
                 <div className="flex flex-col gap-6">
                     <div className="flex flex-row gap-2 pl-4 items-center">
                         <span className="text-2xl font-bold flex flex-row gap-2 items-center">
@@ -136,7 +138,7 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
                     tips: tips,
                 }}
             >
-                <div className="w-full h-full ml-5">{children}</div>
+                <div className="w-full h-full ml-5 mr-10">{children}</div>
             </AnalyticsContext>
         </div>
     );

@@ -1,4 +1,5 @@
 import { Feedback, Tip } from '@/app/util/types';
+import { UserInfo } from 'node:os';
 
 /**
  * Fetches all the tips from the backend.
@@ -62,3 +63,11 @@ export async function getAllFeedback(token: string): Promise<Feedback[]> {
         return [];
     }
 }
+
+// async function getUserInfo(token: string): Promise<UserInfo> {
+//     try {
+//         const result = fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/userinfo', {})
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }

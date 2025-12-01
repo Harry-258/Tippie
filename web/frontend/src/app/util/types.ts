@@ -13,7 +13,8 @@ export type Action =
     | 'Settings'
     | 'Log Out'
     | 'Profile'
-    | 'Learn';
+    | 'Learn'
+    | 'Team';
 
 export type TileProps = {
     children: React.ReactNode;
@@ -23,6 +24,7 @@ export type TileProps = {
     textColor?: string;
     title?: string;
     redirectPage?: Action;
+    height?: string;
 };
 
 export type TileGridProps = {
@@ -30,6 +32,7 @@ export type TileGridProps = {
     rows: number | string;
     cols: number | string;
     className?: string;
+    verticalPadding?: boolean;
 };
 
 export enum Progress {
@@ -97,4 +100,10 @@ export type Feedback = {
 export type Analytics = {
     feedback: Feedback[];
     tips: Tip[];
+};
+
+export type UserInfo = {
+    team: string;
+    position: string;
+    status: 'owner' | 'staff';
 };
