@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { EyeClosedIcon, EyeIcon } from '@phosphor-icons/react';
 import { iconSize } from '@/app/util/util';
 import Link from 'next/link';
+import { addNewUserToDatabase } from '@/app/util/apiCalls';
+import { auth } from '@/firebase/firebaseClient';
 
 export default function Signup() {
     const [email, setEmail] = useState<string>('');
@@ -32,15 +34,26 @@ export default function Signup() {
         } else if (!isRegistering) {
             setIsRegistering(true);
             await doCreateUserWithEmailAndPassword(email, password)
-                .then(() => {
-                    // Apparently you are already logged in?
-                    router.push('/personal/dashboard');
+                .then(async () => {
+                    const user = auth.currentUser;
+                    if (!user) {
+                        console.error('User is not authenticated yet');
+                        router.push('/auth/login');
+                        return;
+                    }
+
+                    const token = await user.getIdToken();
+                    await addNewUserToDatabase(token);
                 })
                 .catch(err => {
                     console.error(err);
                     setSignupFailed(true);
                     setSignupFailedMessage('Something went wrong. Please try again.');
                     setIsRegistering(false);
+                })
+                .finally(() => {
+                    // Apparently you are already logged in?
+                    router.push('/personal/dashboard');
                 });
         }
     }
