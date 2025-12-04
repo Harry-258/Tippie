@@ -210,7 +210,7 @@ export default function Learn() {
                                 <span className="text-2xl text-primary/70">Suggestions:</span>
                                 <div className="flex flex-row gap-4 justify-center">
                                     <button
-                                        className="p-4 border-action border-1 shadow-sm rounded-xl text-wrap
+                                        className="p-4 border-action border-2 shadow-sm rounded-xl text-wrap
                                             w-1/3 text-left hover:scale-[1.01] transition duration-200
                                             hover:cursor-pointer hover:shadow-md"
                                         onClick={() => {
@@ -223,7 +223,7 @@ export default function Learn() {
                                         Netherlands?
                                     </button>
                                     <button
-                                        className="p-4 border-action border-1 shadow-sm rounded-xl text-wrap
+                                        className="p-4 border-action border-2 shadow-sm rounded-xl text-wrap
                                             w-1/3 text-left hover:scale-[1.01] transition duration-200
                                             hover:cursor-pointer hover:shadow-md"
                                         onClick={() => {

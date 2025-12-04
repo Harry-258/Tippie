@@ -116,3 +116,8 @@ export type ModalProps = {
     content: string;
     onClose: () => void;
 };
+
+export type ChartProps = {
+    data: number[][];
+    labels: string[];
+};

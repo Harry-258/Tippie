@@ -16,7 +16,7 @@ export default function ChatSuggestion() {
                 href="/personal/advice"
                 className="hover:shadow-md transition-all duration-300
                         hover:scale-[1.01] rounded-lg bg-white p-4
-                        shadow-sm border border-action/60 mt-5"
+                        shadow-sm border-2 border-action/60 mt-5"
             >
                 <div className="flex gap-3 items-center">
                     <div className="flex-shrink-0 w-9 h-9 rounded-full bg-action flex items-center justify-center">
