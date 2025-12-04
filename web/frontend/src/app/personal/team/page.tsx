@@ -35,14 +35,14 @@ export default function Team() {
                         innerClassName="flex flex-col gap-6 py-8 px-10 justify-center"
                         outerClassName="min-h-1/5 max-h-1/5"
                     >
-                        <div className="flex flex-row gap-2 items-center">
+                        <div className="flex flex-row gap-2 items-center justify-center">
                             <UsersFourIcon size={iconSize * 2} />
                             <span className="text-3xl font-bold">Team {currentTeamName}</span>
                         </div>
 
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-2 items-center">
                             <div
-                                className="hover:cursor-pointer rounded-xl flex flex-row gap-2 items-center w-1/2 font-semibold text-lg"
+                                className="hover:cursor-pointer rounded-xl flex flex-row gap-2 items-center font-semibold text-lg"
                                 onClick={() => {
                                     navigator.clipboard.writeText(currentTeamId);
                                 }}

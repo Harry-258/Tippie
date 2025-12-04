@@ -36,9 +36,22 @@ export default function Analytics() {
         1765101600000, 1765188000000, 1765274400000,
     ];
 
+    function getColSpan(feedback?: string) {
+        if (!feedback) {
+            return 'col-span-1';
+        }
+
+        const length = feedback.length;
+        if (length > 40) {
+            return 'col-span-3';
+        } else if (length > 30) {
+            return 'col-span-2';
+        }
+        return 'col-span-1';
+    }
+
     useEffect(() => {
         setRatingAverage(Number(calculateRatingAverage(feedback)));
-        feedback.forEach(item => console.log(item.feedback + ' ' + item.rating));
     }, [feedback]);
 
     return (
@@ -113,19 +126,19 @@ export default function Analytics() {
                     </Tile>
                 </div>
                 <Tile innerClassName="flex flex-col gap-4 pl-12 pt-10">
-                    <div className="flex flex-row gap-1 items-center font-bold text-xl mb-2">
+                    <div className="flex flex-row gap-1 items-center justify-center font-bold text-xl mb-2">
                         <EnvelopeIcon size={iconSize} weight="bold" />
                         <span>Received feedback:</span>
                     </div>
                     {feedback.length === 0 && (
                         <span className="text-2xl m-4">No reviews yet...</span>
                     )}
-                    <div className="flex flex-row gap-5 flex-wrap items-center">
+                    <div className="grid grid-cols-6 gap-5">
                         {feedback.map((item, index) => (
                             <div
                                 className={`rounded-xl bg-white p-4
-                                shadow-sm border-2 ${!item.rating ? 'border-action' : item.rating <= 2.5 ? 'border-red-400' : 'border-action'} flex flex-col justify-between
-                                items-start flex-none font-semibold max-w-1/2 gap-2`}
+                                shadow-sm border-2 ${!item.rating ? 'border-action' : item.rating <= 2.5 ? 'border-red-400' : 'border-action'} flex flex-col justify-center
+                                flex-none font-semibold ${getColSpan(item.feedback)} gap-2 items-center text-center`}
                                 key={index}
                             >
                                 {item.feedback && <span>{item.feedback}</span>}

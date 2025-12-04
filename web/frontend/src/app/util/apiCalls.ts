@@ -82,11 +82,11 @@ export async function getUserInfo(token: string): Promise<UserInfo> {
             teamName: data.teamName ?? '',
             position: data.position ?? '',
             status: data.status ?? 'staff',
-            refetch: () => {},
+            refetch: async () => {},
         };
     } catch (error) {
         console.error(error);
-        return { teamId: '', teamName: '', position: '', status: 'staff', refetch: () => {} };
+        return { teamId: '', teamName: '', position: '', status: 'staff', refetch: async () => {} };
     }
 }
 

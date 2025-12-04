@@ -6,11 +6,13 @@ import { iconSize } from '@/app/util/util';
 export default function ChatSuggestion() {
     return (
         <div className="flex flex-col gap-1">
-            <span className="text-lg font-bold flex flex-row gap-1 items-center ml-2">
+            <span className="text-lg font-bold flex flex-row gap-1 items-center justify-center ml-2">
                 <LightbulbIcon size={iconSize} weight="bold" />
                 Want More Expert Trading Advice?
             </span>
-            <span className="ml-2">Jump back into your conversations or start a new one!</span>
+            <span className="ml-2 text-center">
+                Jump back into your conversations or start a new one!
+            </span>
 
             <Link
                 href="/personal/advice"
@@ -35,7 +37,7 @@ export default function ChatSuggestion() {
                 </div>
             </Link>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 justify-center">
                 <Link href={'/personal/advice'} className="mt-4">
                     <div className="flex">
                         <div className="button flex gap-1 items-center shadow-md">

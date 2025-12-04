@@ -42,7 +42,7 @@ export default function Dashboard() {
     return (
         <TileGrid rows={6} cols={10}>
             <Tile
-                innerClassName="flex flex-col gap-4 justify-center ml-2"
+                innerClassName="flex flex-col items-center gap-4 justify-center ml-2"
                 outerClassName="col-span-full"
             >
                 <span className="text-2xl font-bold">
@@ -65,7 +65,7 @@ export default function Dashboard() {
                 redirectPage="Analytics"
             >
                 <Stack width="95%" height="95%">
-                    <div className="flex flex-row gap-1 items-center font-bold text-lg">
+                    <div className="flex flex-row gap-1 items-center justify-center font-bold text-lg">
                         <ChartBarIcon size={iconSize} weight="bold" />
                         <span>Tips Received Over the Last Week</span>
                     </div>
@@ -76,6 +76,7 @@ export default function Dashboard() {
             <Tile
                 outerClassName="col-span-2 row-span-1"
                 innerClassName="flex flex-col justify-between items-center text-lg p-6"
+                redirectPage="Analytics"
             >
                 <div className="flex flex-row items-center gap-2 text-center">
                     <ClockUserIcon size={iconSize} weight="bold" className="text-primary" />
@@ -100,7 +101,6 @@ export default function Dashboard() {
             <Tile
                 outerClassName="col-span-2 row-span-1"
                 innerClassName="flex flex-col justify-between items-center text-lg p-6"
-                redirectPage="Trading"
             >
                 <div className="flex flex-row items-center gap-2 text-center">
                     <BriefcaseIcon size={iconSize} weight="bold" className="text-primary" />
@@ -135,7 +135,9 @@ export default function Dashboard() {
                 outerClassName="col-span-full"
                 innerClassName="flex flex-row gap-6 justify-center"
             >
-                {feedback.length === 0 && <span className="text-2xl m-4">No reviews yet...</span>}
+                {feedback.length === 0 && (
+                    <span className="text-2xl h-full flex items-center">No reviews yet...</span>
+                )}
                 {feedback.length !== 0 && (
                     <div className="flex flex-col text-lg items-center justify-center min-w-1/5">
                         <div className="flex flex-row gap-2 items-center font-bold">
@@ -148,9 +150,9 @@ export default function Dashboard() {
                 {displayedFeedback.map((item, index) => (
                     <Link
                         className="hover:shadow-md transition-all duration-300
-                            hover:scale-[1.01] rounded-xl bg-white p-4
-                            shadow-sm border-2 border-action flex flex-col justify-between
-                            items-start flex-none font-semibold max-w-1/6 min-w-1/6"
+                            hover:scale-[1.01] rounded-xl bg-white p-3 gap-2 text-center
+                            shadow-sm border-2 border-action flex flex-col justify-center
+                            items-center flex-none font-semibold max-w-1/6 min-w-1/6"
                         key={index}
                         href="/personal/analytics"
                     >
