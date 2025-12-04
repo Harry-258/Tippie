@@ -98,7 +98,7 @@ export default function Team() {
                                     selected={selectedDates}
                                     classNames={{
                                         today: `text-action`,
-                                        selected: `bg-primary text-action justify-center rounded-full`,
+                                        selected: `bg-action text-primary justify-center rounded-full`,
                                         root: `${defaultClassNames.root} max-w-none m-5`,
                                         chevron: `${defaultClassNames.chevron} fill-action`,
                                     }}
@@ -106,21 +106,27 @@ export default function Team() {
                                     navLayout="around"
                                 />
 
-                                <div className="flex flex-col gap-8 h-full mt-7 w-1/3">
-                                    <div className="flex flex-col gap-2">
+                                <div className="flex flex-col gap-4 h-full mt-7 w-1/3">
+                                    <div className="flex flex-col gap-2 pl-2">
                                         <span className="font-semibold text-lg">
                                             Upcoming shift:
                                         </span>
                                         <span>Monday, 08.12.2025</span>
                                         <span>8:00 - 16:00</span>
                                     </div>
-                                    <div className="flex flex-col gap-2">
+
+                                    <div className="w-full border-b-2 border-action" />
+
+                                    <div className="flex flex-col gap-2 pl-2">
                                         <span className="font-semibold text-lg">
                                             Next vacation day:
                                         </span>
                                         <span>Wednesday, 17.12.2025</span>
                                     </div>
-                                    <div className="flex flex-col gap-2">
+
+                                    <div className="w-full border-b-2 border-action" />
+
+                                    <div className="flex flex-col gap-2 pl-2">
                                         <span className="font-semibold text-lg">
                                             Announcements:
                                         </span>

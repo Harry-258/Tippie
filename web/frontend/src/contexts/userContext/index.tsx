@@ -18,14 +18,13 @@ export function useUserContext() {
 }
 
 export default function UserInfoProvider({ children }: Readonly<{ children: React.ReactNode }>) {
-    const [teamId, setTeamId] = useState('a5vQqmbYSmUXE263XHRErIazXgH3');
-    const [teamName, setTeamName] = useState('Tippie');
+    const [teamId, setTeamId] = useState('');
+    const [teamName, setTeamName] = useState('');
     const [position, setPosition] = useState('');
     const [status, setStatus] = useState<'staff' | 'owner'>('staff');
 
     useEffect(() => {
-        // TODO: uncomment
-        // refetch();
+        refetch();
     }, []);
 
     const refetch = async () => {

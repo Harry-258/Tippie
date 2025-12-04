@@ -17,7 +17,7 @@ import {
 } from '@phosphor-icons/react';
 import React, { useContext, useEffect, useState } from 'react';
 import ChatSuggestion from '@/app/components/ChatSuggestion';
-import { AnalyticsContext, iconSize } from '@/app/util/util';
+import { AnalyticsContext, calculateRatingAverage, iconSize } from '@/app/util/util';
 import { useAuth } from '@/contexts/authContext';
 import { Feedback } from '@/app/util/types';
 import { StyledAverageRating, StyledRating } from '@/app/components/StarRating';
@@ -36,23 +36,7 @@ export default function Dashboard() {
                 .filter(review => review.rating && review.feedback)
                 .filter((value, index) => index < 4)
         );
-
-        let ratingsTotal = 0;
-        let ratingsNumber = 0;
-
-        for (const data of feedback) {
-            if (data.rating) {
-                ratingsTotal += data.rating;
-                ratingsNumber += 1;
-            }
-        }
-
-        if (ratingsNumber === 0) {
-            return;
-        }
-
-        const result = (ratingsTotal / ratingsNumber).toFixed(2);
-        setRatingAverage(Number(result));
+        setRatingAverage(Number(calculateRatingAverage(feedback)));
     }, [feedback]);
 
     return (
@@ -165,7 +149,7 @@ export default function Dashboard() {
                     <Link
                         className="hover:shadow-md transition-all duration-300
                             hover:scale-[1.01] rounded-xl bg-white p-4
-                            shadow-sm border-2 border-action/60 flex flex-col justify-between
+                            shadow-sm border-2 border-action flex flex-col justify-between
                             items-start flex-none font-semibold max-w-1/6 min-w-1/6"
                         key={index}
                         href="/personal/analytics"

@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import Rating from '@mui/material/Rating';
 
+// TODO: Refactor into one element with a size prop
+
 export const StyledAverageRating = styled(Rating)({
     '& .MuiRating-iconFilled': {
         color: '#def186',
