@@ -103,7 +103,16 @@ export type Analytics = {
 };
 
 export type UserInfo = {
-    team: string;
+    teamId: string;
+    teamName: string;
     position: string;
     status: 'owner' | 'staff';
+    refetch: () => Promise<void>;
+};
+
+export type ModalProps = {
+    isOpen: boolean;
+    type: 'success' | 'error';
+    content: string;
+    onClose: () => void;
 };

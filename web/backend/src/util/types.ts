@@ -9,9 +9,9 @@ export interface ChatMessage {
     timestamp?: number;
 }
 
-export type User = {
-    id: string;
+export type UserInfo = {
     teamId: string;
+    teamName: string;
     position: string;
     status: 'owner' | 'staff';
 }

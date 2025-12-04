@@ -5,6 +5,7 @@
     --background-hover: #e9e9e6;
     --foreground: #f7f7f5;
     --action: #def186;
+    --actionActive: #c9e074;
     --primary: #1f1e30;
     --primaryHover: #2c2b45;
     --productBlue: #dbebf4;
@@ -18,6 +19,7 @@
     --color-primary: var(--primary);
     --color-primaryHover: var(--primaryHover);
     --color-action: var(--action);
+    --color-actionActive: var(--actionActive);
     --color-productBlue: var(--productBlue);
     --color-homeText: var(--homeText);
 
@@ -31,6 +33,7 @@
         --background-hover: #e9e9e6;
         --foreground: #f7f7f5;
         --action: #def186;
+        --actionActive: #c9e074;
         --primary: #1f1e30;
         --primaryHover: #2c2b45;
         --productBlue: #e2f1f9;

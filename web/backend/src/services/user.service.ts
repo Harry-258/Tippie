@@ -1,13 +1,26 @@
-import {User} from "../util/types.js";
+import {UserInfo} from "../util/types.js";
 import {firestore, FieldValue} from "../config/firebase.config.js";
 
-// export async function getUser(uid: string): Promise<User> {
-//     try {
-//
-//     } catch (error) {
-//         console.error("Error getting user info in services: " + error);
-//     }
-// }
+/**
+ * Gets the user information from the database.
+ * @param uid The ID of the user whose information is to be retrieved.
+ * @returns A promise object containing the user information as a {@link UserInfo} object or void if an error occurs.
+ */
+export async function getUser(uid: string) {
+    try {
+        const userRef = firestore.collection('users').doc(uid);
+        const userDoc = await userRef.get();
+
+        return {
+            teamId: userDoc.data()?.teamId ?? "",
+            teamName: userDoc.data()?.teamName ?? "",
+            position: userDoc.data()?.position ?? "",
+            status: userDoc.data()?.status ?? "staff",
+        } as UserInfo
+    } catch (error) {
+        console.error("Error getting user info in services: " + error);
+    }
+}
 
 /**
  * Assigns the given user to the given team.
@@ -25,8 +38,11 @@ export async function assignUserTeam(uid: string, teamId: string) {
         const userRef = firestore.collection('users').doc(uid);
         userRef.set({
             teamId: teamsRef.id,
-            teamName: teamName
+            teamName: teamName,
+            status: 'staff'
         });
+
+        return teamName;
     } catch (error) {
         console.error("Error getting user info in services: " + error);
     }
@@ -50,7 +66,8 @@ export async function createNewTeam(uid: string, teamName: string): Promise<stri
         const userRef = firestore.collection('users').doc(uid);
         await userRef.set({
             teamId: teamsRef.id,
-            teamName: teamName
+            teamName: teamName,
+            status: 'owner'
         });
 
         return teamsRef.id;
@@ -67,7 +84,9 @@ export async function createNewTeam(uid: string, teamName: string): Promise<stri
 export async function addNewUserToDatabase(uid: string) {
     try {
         const userRef = firestore.collection('users').doc(uid);
-        await userRef.set({});
+        const status = await userRef.get().then(doc => doc.data()?.status);
+
+        await userRef.set({ status: status ? status : 'staff' }, { merge: true });
     } catch (error) {
         console.error("Error adding a new user in services: " + error);
     }

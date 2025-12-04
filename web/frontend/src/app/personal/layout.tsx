@@ -18,6 +18,7 @@ import { AnalyticsContext, iconSize } from '@/app/util/util';
 import { useAuth } from '@/contexts/authContext';
 import { getAllFeedback, getAllTips } from '@/app/util/apiCalls';
 import { auth } from '@/firebase/firebaseClient';
+import UserInfoProvider from '@/contexts/userContext';
 
 export default function PersonalLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     const { loggedIn, currentUser } = useAuth();
@@ -75,7 +76,7 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
                             path.toLowerCase().trim().endsWith(option.name.toLowerCase()) ? (
                                 <div
                                     key={i}
-                                    className="rounded-3xl bg-action text-primary p-2 pl-4 pr-30 w-full flex flex-row gap-2 items-center"
+                                    className="rounded-3xl bg-action shadow-sm hover:cursor-pointer text-primary p-2 pl-4 pr-30 w-full flex flex-row gap-2 items-center"
                                 >
                                     <option.icon size={iconSize} />
                                     <span>{option.name}</span>
@@ -138,7 +139,9 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
                     tips: tips,
                 }}
             >
-                <div className="w-full h-full ml-5 mr-10">{children}</div>
+                <UserInfoProvider>
+                    <div className="w-full h-full ml-5 mr-10">{children}</div>
+                </UserInfoProvider>
             </AnalyticsContext>
         </div>
     );

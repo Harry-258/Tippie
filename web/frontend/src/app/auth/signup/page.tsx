@@ -11,6 +11,7 @@ import { auth } from '@/firebase/firebaseClient';
 
 export default function Signup() {
     const [email, setEmail] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [passwordConfirm, setPasswordConfirm] = useState<string>('');
     const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
@@ -26,6 +27,12 @@ export default function Signup() {
 
     async function submit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+
+        if (!username || !email || !password || !passwordConfirm) {
+            setSignupFailedMessage('Please fill out all fields!');
+            setSignupFailed(true);
+            return;
+        }
 
         // TODO: input validation
         if (password !== passwordConfirm) {
@@ -44,16 +51,15 @@ export default function Signup() {
 
                     const token = await user.getIdToken();
                     await addNewUserToDatabase(token);
+
+                    // Apparently you are already logged in?
+                    router.push('/personal/dashboard');
                 })
                 .catch(err => {
                     console.error(err);
                     setSignupFailed(true);
                     setSignupFailedMessage('Something went wrong. Please try again.');
                     setIsRegistering(false);
-                })
-                .finally(() => {
-                    // Apparently you are already logged in?
-                    router.push('/personal/dashboard');
                 });
         }
     }
@@ -74,6 +80,21 @@ export default function Signup() {
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         placeholder="Enter your email"
+                        className={`${inputClass} p-3`}
+                    />
+                </div>
+
+                <div className="flex flex-col text-left w-full">
+                    <label htmlFor="username" className={labelClass}>
+                        Username
+                    </label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        placeholder="Enter your username"
                         className={`${inputClass} p-3`}
                     />
                 </div>
