@@ -57,23 +57,24 @@ export default function Home() {
                 />
 
                 <DescriptionCardWithImage
+                    imageOnTheLeft={true}
+                    imageSrc={'/wristband_transparent.png'}
+                    imageSize={descriptionImageHeight}
+                    title={'Track your performance'}
+                    content={
+                        'See your performance at a glance with Tippie. Access detailed stats on your earnings, ' +
+                        'explore customer feedback, and monitor your rating — all in one place, so you always know ' +
+                        'how you’re doing and where you’re growing.'
+                    }
+                />
+
+                <DescriptionCardWithImage
                     imageSrc={'/advice_page.png'}
                     imageSize={800}
                     title={'Learn'}
                     content={
                         'Ask Tippie’s AI for personalized investing insights and learn how ' +
                         'to grow the money you earn from tips — one question at a time.'
-                    }
-                    imageOnTheLeft={true}
-                />
-
-                <DescriptionCardWithImage
-                    imageSrc={'/wristband_transparent.png'}
-                    imageSize={descriptionImageHeight}
-                    title={'Invest'}
-                    content={
-                        'Invest directly in stocks through our web app and watch your money grow over time.\n' +
-                        'No complicated platforms, no hidden steps — just simple, smart investing designed for everyone.'
                     }
                 />
             </div>

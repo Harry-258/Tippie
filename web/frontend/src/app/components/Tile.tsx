@@ -16,13 +16,14 @@ export default function Tile({
     textColor,
     title,
     redirectPage,
+    height = 'h-full',
 }: TileProps) {
     const elements = (
         <div
             className={`
                 ${redirectPage ? 'hover:shadow-lg transition-all duration-300' : outerClassName} rounded-3xl
                 ${bgColor ? bgColor : 'bg-white'}
-                h-full w-full shadow-md`}
+                ${height} w-full shadow-md`}
         >
             {title && (
                 <div

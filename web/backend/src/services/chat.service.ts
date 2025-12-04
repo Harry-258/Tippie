@@ -1,5 +1,5 @@
-import {firestore, FieldValue} from "../config/firebase.config.js";
-import {Content, GoogleGenerativeAI, HarmBlockThreshold, HarmCategory} from "@google/generative-ai";
+import {firestore} from "../config/firebase.config.js";
+import {GoogleGenerativeAI, HarmBlockThreshold, HarmCategory} from "@google/generative-ai";
 import {ChatMessage, Document} from "../util/types.js";
 
 /**

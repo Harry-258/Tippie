@@ -8,6 +8,8 @@ import Link from 'next/link';
 import { EyeClosedIcon, EyeIcon } from '@phosphor-icons/react';
 import { iconSize } from '@/app/util/util';
 import { FcGoogle } from 'react-icons/fc';
+import { auth } from '@/firebase/firebaseClient';
+import { addNewUserToDatabase } from '@/app/util/apiCalls';
 
 export default function Page() {
     // TODO: - Add Google login button
@@ -43,7 +45,17 @@ export default function Page() {
         e.preventDefault();
         if (!isLoggingIn) {
             signInWithGoogle()
-                .then(() => {
+                .then(async () => {
+                    const user = auth.currentUser;
+                    if (!user) {
+                        console.error('User is not authenticated yet');
+                        router.push('/auth/login');
+                        return;
+                    }
+
+                    const token = await user.getIdToken();
+                    await addNewUserToDatabase(token);
+
                     router.push('/personal/dashboard');
                 })
                 .catch(err => {

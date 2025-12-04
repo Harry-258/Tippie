@@ -6,9 +6,12 @@ import { useRouter } from 'next/navigation';
 import { EyeClosedIcon, EyeIcon } from '@phosphor-icons/react';
 import { iconSize } from '@/app/util/util';
 import Link from 'next/link';
+import { addNewUserToDatabase } from '@/app/util/apiCalls';
+import { auth } from '@/firebase/firebaseClient';
 
 export default function Signup() {
     const [email, setEmail] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [passwordConfirm, setPasswordConfirm] = useState<string>('');
     const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
@@ -25,6 +28,12 @@ export default function Signup() {
     async function submit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
+        if (!username || !email || !password || !passwordConfirm) {
+            setSignupFailedMessage('Please fill out all fields!');
+            setSignupFailed(true);
+            return;
+        }
+
         // TODO: input validation
         if (password !== passwordConfirm) {
             setSignupFailedMessage('Passwords do not match!');
@@ -32,7 +41,17 @@ export default function Signup() {
         } else if (!isRegistering) {
             setIsRegistering(true);
             await doCreateUserWithEmailAndPassword(email, password)
-                .then(() => {
+                .then(async () => {
+                    const user = auth.currentUser;
+                    if (!user) {
+                        console.error('User is not authenticated yet');
+                        router.push('/auth/login');
+                        return;
+                    }
+
+                    const token = await user.getIdToken();
+                    await addNewUserToDatabase(token);
+
                     // Apparently you are already logged in?
                     router.push('/personal/dashboard');
                 })
@@ -61,6 +80,21 @@ export default function Signup() {
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         placeholder="Enter your email"
+                        className={`${inputClass} p-3`}
+                    />
+                </div>
+
+                <div className="flex flex-col text-left w-full">
+                    <label htmlFor="username" className={labelClass}>
+                        Username
+                    </label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        placeholder="Enter your username"
                         className={`${inputClass} p-3`}
                     />
                 </div>
