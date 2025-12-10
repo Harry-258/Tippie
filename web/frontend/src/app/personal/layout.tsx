@@ -14,7 +14,12 @@ import {
     UserIcon,
     UsersFourIcon,
 } from '@phosphor-icons/react';
-import { AnalyticsContext, iconSize } from '@/app/util/util';
+import {
+    AnalyticsContext,
+    calculateRatingAverage,
+    calculateTipTotal,
+    iconSize,
+} from '@/app/util/util';
 import { useAuth } from '@/contexts/authContext';
 import { getAllFeedback, getAllTips } from '@/app/util/apiCalls';
 import { auth } from '@/firebase/firebaseClient';
@@ -137,6 +142,8 @@ export default function PersonalLayout({ children }: Readonly<{ children: React.
                 value={{
                     feedback: feedback,
                     tips: tips,
+                    averageRating: Number(calculateRatingAverage(feedback)),
+                    totalTips: calculateTipTotal(tips),
                 }}
             >
                 <UserInfoProvider>

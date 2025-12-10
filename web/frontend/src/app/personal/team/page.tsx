@@ -55,7 +55,7 @@ export default function Team() {
                     <div className="flex flex-row gap-5 max-h-1/3 min-h-1/3">
                         <Tile innerClassName="flex flex-col gap-2 p-4 h-full">
                             <span className="text-xl font-semibold text-center">
-                                Team {teamName} total tips from last week
+                                Team {teamName} Total Tips From Last Week
                             </span>
                             <Chart
                                 data={[[112, 97, 105, 100.5, 125, 114, 109]]}
@@ -65,7 +65,7 @@ export default function Team() {
 
                         <Tile innerClassName="flex flex-col gap-2 p-4 h-full">
                             <span className="text-xl font-semibold text-center">
-                                Team {teamName} average tips from last week
+                                Team {teamName} Average Tips From Last Week
                             </span>
                             <Chart
                                 data={[
@@ -88,7 +88,7 @@ export default function Team() {
                                     className="text-primary"
                                 />
                                 <span className="text-xl font-semibold tracking-wide">
-                                    Your shifts
+                                    Your Shifts
                                 </span>
                             </div>
 
@@ -139,7 +139,7 @@ export default function Team() {
                             <div className="flex flex-row items-center gap-2 text-center">
                                 <StarIcon size={iconSize} weight="bold" className="text-primary" />
                                 <span className="text-xl font-semibold tracking-wide">
-                                    Team average rating
+                                    Team Average Rating
                                 </span>
                             </div>
 

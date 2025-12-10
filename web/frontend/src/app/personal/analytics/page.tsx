@@ -1,15 +1,11 @@
 'use client';
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import Tile from '@/app/components/Tile';
-import {
-    AnalyticsContext,
-    calculateRatingAverage,
-    groupTipsByDay,
-    iconSize,
-} from '@/app/util/util';
+import { AnalyticsContext, groupTipsByDay, iconSize } from '@/app/util/util';
 import Chart from '@/app/components/Chart';
 import {
+    ChartLineIcon,
     CurrencyDollarIcon,
     EnvelopeIcon,
     PiggyBankIcon,
@@ -22,13 +18,8 @@ import { StyledRating, StyledTeamAverageRating } from '@/app/components/StarRati
 import { LineChart } from '@mui/x-charts';
 
 export default function Analytics() {
-    const { feedback, tips } = useContext(AnalyticsContext);
+    const { feedback, tips, totalTips, averageRating } = useContext(AnalyticsContext);
     const tipChartData = groupTipsByDay(tips);
-    const tipsTotal = tips.reduce(
-        (previousValue, currentValue) => previousValue + currentValue.amount,
-        0
-    );
-    const [ratingAverage, setRatingAverage] = useState<number>(0);
 
     const mockedAverageRatings = [4, 4.5, 4.67, 4.75, 4.4, 4.5, 4.57, 4.44, 4.22];
     const mockedAverageRatingsTimestamps = [
@@ -50,18 +41,22 @@ export default function Analytics() {
         return 'col-span-1';
     }
 
-    useEffect(() => {
-        setRatingAverage(Number(calculateRatingAverage(feedback)));
-    }, [feedback]);
-
     return (
         <div className="h-screen">
             <div className="flex flex-col gap-5 overflow-y-auto h-full py-10 hide-scrollbar">
+                <div className="">
+                    <Tile innerClassName="text-2xl text-center font-bold">
+                        <div className="flex flex-row gap-1 items-center justify-center font-bold">
+                            <ChartLineIcon size={24} weight="bold" />
+                            <span>Your Analytics:</span>
+                        </div>
+                    </Tile>
+                </div>
                 <div className="grid grid-rows-1 grid-cols-3 min-h-1/3 gap-5">
                     <Tile innerClassName="flex flex-col gap-1" outerClassName="col-span-2">
                         <div className="flex flex-row gap-1 items-center justify-center">
                             <CurrencyDollarIcon size={iconSize} weight="bold" />
-                            <span className="text-xl font-bold">Tips from the last week</span>
+                            <span className="text-xl font-bold">Tips From the Last Week</span>
                         </div>
                         <Chart
                             data={[Array.from(tipChartData.values())]}
@@ -75,7 +70,7 @@ export default function Analytics() {
                                 <span>Your Saving Goal</span>
                             </div>
                             <GoalGauge />
-                            <span className="w-full text-center mt-2">{tipsTotal}/100€</span>
+                            <span className="w-full text-center mt-2">{totalTips}/100€</span>
                         </Stack>
                     </Tile>
                 </div>
@@ -89,9 +84,9 @@ export default function Analytics() {
                             <span className="text-xl font-bold tracking-wide">Average Rating</span>
                         </div>
                         <div className="text-lg h-full w-full items-center justify-center flex flex-col gap-4">
-                            <span className="text-3xl">{ratingAverage}</span>
+                            <span className="text-3xl">{averageRating}</span>
                             <StyledTeamAverageRating
-                                value={ratingAverage}
+                                value={averageRating}
                                 precision={0.05}
                                 readOnly
                             />
@@ -128,7 +123,7 @@ export default function Analytics() {
                 <Tile innerClassName="flex flex-col gap-4 pl-12 pt-10">
                     <div className="flex flex-row gap-1 items-center justify-center font-bold text-xl mb-2">
                         <EnvelopeIcon size={iconSize} weight="bold" />
-                        <span>Received feedback:</span>
+                        <span>Received Feedback:</span>
                     </div>
                     {feedback.length === 0 && (
                         <span className="text-2xl m-4">No reviews yet...</span>

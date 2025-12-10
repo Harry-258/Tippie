@@ -3,14 +3,11 @@ import { useContext } from 'react';
 import { AnalyticsContext } from '@/app/util/util';
 
 export default function GoalGauge() {
-    const { tips } = useContext(AnalyticsContext);
+    const { totalTips } = useContext(AnalyticsContext);
 
     return (
         <Gauge
-            value={tips.reduce(
-                (previousValue, currentValue) => previousValue + currentValue.amount,
-                0
-            )}
+            value={totalTips}
             margin={{ left: 0, right: 0, top: 4, bottom: 0 }}
             sx={() => ({
                 [`& .${gaugeClasses.valueText}`]: {

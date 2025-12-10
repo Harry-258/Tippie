@@ -9,6 +9,8 @@ export const languages = ['EN'];
 export const AnalyticsContext = createContext<Analytics>({
     feedback: [],
     tips: [],
+    totalTips: 0,
+    averageRating: 0,
 });
 
 /**
@@ -70,4 +72,17 @@ export function calculateRatingAverage(feedback: Feedback[]): string {
     }
 
     return (ratingsTotal / ratingsNumber).toFixed(2);
+}
+
+/**
+ * Calculates the total amount of tips from the provided array.
+ * @param tips The array containing the tips
+ * @returns A number representing the sum of the tips
+ */
+export function calculateTipTotal(tips: Tip[]): number {
+    return Number(
+        tips
+            .reduce((previousValue, currentValue) => previousValue + currentValue.amount, 0)
+            .toFixed(2)
+    );
 }

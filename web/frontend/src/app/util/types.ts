@@ -100,6 +100,8 @@ export type Feedback = {
 export type Analytics = {
     feedback: Feedback[];
     tips: Tip[];
+    totalTips: number;
+    averageRating: number;
 };
 
 export type UserInfo = {
